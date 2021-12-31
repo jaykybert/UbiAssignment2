@@ -1,11 +1,19 @@
-import React, { useEffect, useState } from "react";
+// React & Navigation
+import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+// Components
+import HomescreenStack from "./app/navigation/HomescreenStack";
 
+/**
+ * TODO
+ * @returns
+ */
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Hello</Text>
-    </View>
+    <NavigationContainer style={styles.container}>
+      <HomescreenStack />
+    </NavigationContainer>
   );
 }
 
