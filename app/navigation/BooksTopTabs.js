@@ -13,7 +13,7 @@ const Tabs = createMaterialTopTabNavigator();
 const BooksTopTabs = () => {
   return (
     <Tabs.Navigator initialRotueName="Recommended">
-      <Tabs.Screen name="Recommended" component={EmptyComponent} />
+      <Tabs.Screen name="Recommendations" component={EmptyComponent} />
       <Tabs.Screen name="History" component={EmptyComponent} />
     </Tabs.Navigator>
   );
