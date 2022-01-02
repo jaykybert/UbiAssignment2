@@ -5,13 +5,12 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 /**
  * @function Header
- * A custom header for the application that contains the Magicseaweed logo.
  */
 const Header = () => {
   return (
     <View style={styles.container}>
       <View style={styles.icon}>
-        <MaterialCommunityIcons name="bookshelf" size={34} color="#256f5a" />
+        <MaterialCommunityIcons name="bookshelf" size={34} color="#000" />
       </View>
 
       <View style={styles.textView}>

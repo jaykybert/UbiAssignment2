@@ -10,84 +10,157 @@ import {
   Text,
   View,
 } from "react-native";
+// Components
+import NotStartedModalContents from "../components/NotStartedModalContents";
+import GotBookModalContents from "../components/GotBookModalContents";
+import GotSubjectsModalContents from "../components/GotSubjectsModalContents";
+import GotAuthorsWorksModalContents from "../components/GotAuthorsWorksModalContents";
 // Utilities
 import {
-  GetBookByISBN,
   GetAuthorsWorksByKey,
+  GetBookByISBN,
   GetBooksBySubject,
+  GetSubjectsByWorkKey,
 } from "../scripts/bookApiCalls";
 
 /**
  * TODO
- * @returns
+ * @returns {Camera}
  */
 const Camera = () => {
-  const [bookData, setBookData] = useState("");
-  const [modalVisible, setModalVisible] = useState("");
-  const [bookLookedUp, setBookLookedUp] = useState(false);
-  const [worksLookedUp, setWorksLookedUp] = useState(false);
+  const [bookData, setBookData] = useState();
+  const [subjectData, setSubjectData] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [recommendationProgress, setRecommendationProgress] =
+    useState("NOT_STARTED");
 
-  /**
-   * TODO
-   */
-  const BookRecommendations = async () => {
+  const LookupBook = async () => {
+    // Book by ISBN
     let bookData = await GetBookByISBN("0140306765");
-    setBookLookedUp(true);
     setBookData(bookData);
-
-    // TODO: Make following calls non-blocking.
-    const authorKey = bookData["authors"][0]["key"];
-    let authorsWorks = await GetAuthorsWorksByKey(authorKey);
-    setWorksLookedUp(true);
-
-    let relatedBooks = await GetBooksBySubject(bookData["works"][0]["key"]);
+    setRecommendationProgress("GOT_BOOK");
   };
 
-  return (
-    <View style={styles.container}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onShow={BookRecommendations}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={modalStyles.centeredView}>
-          <View style={modalStyles.modalView}>
-            <ActivityIndicator
-              color="black"
-              size="large"
-              animating={!bookLookedUp}
-            />
-            <Text>{bookData["title"]}</Text>
+  const LookupSubjects = async () => {
+    // Book Subjects by Key
+    let subjects = await GetSubjectsByWorkKey(bookData["workKey"]);
+    setSubjectData(subjects);
+    setRecommendationProgress("GOT_SUBJECTS");
+  };
 
-            <ActivityIndicator
-              color="red"
-              size="large"
-              animating={bookLookedUp && !worksLookedUp}
-            />
+  const LookupAuthorsWorks = async () => {
+    // (Primary) Author's Works by Key
+    let authorsWorks = await GetAuthorsWorksByKey(bookData["authorKey"]);
+    setRecommendationProgress("GOT_AUTHORS_WORKS");
+  };
 
-            <Pressable
-              style={[modalStyles.button, modalStyles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={modalStyles.textStyle}>Cancel</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
+  const LookupRelatedBooks = async (subjects) => {
+    // Related Books by Subject
+    let relatedBooks = await GetBooksBySubject(subjects);
+    setRecommendationProgress("GOT_RELATED_BOOKS");
+  };
 
-      <Button
-        title="Lookup"
-        accessibilityLabel="Lookup information."
-        onPress={() => setModalVisible(true)}
-      ></Button>
+  if (recommendationProgress === "NOT_STARTED") {
+    return (
+      <View style={styles.container}>
+        <Modal
+          animationType="none"
+          transparent={true}
+          visible={modalVisible}
+          onShow={LookupBook}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <NotStartedModalContents />
+        </Modal>
 
-      <Text>Test</Text>
-    </View>
-  );
+        <Button
+          title="Lookup"
+          accessibilityLabel="Lookup information."
+          onPress={() => setModalVisible(true)}
+        ></Button>
+      </View>
+    );
+  } else if (recommendationProgress === "GOT_BOOK") {
+    LookupSubjects();
+    return (
+      <View style={styles.container}>
+        <Modal
+          animationType="none"
+          transparent={true}
+          visible={true}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <GotBookModalContents bookData={bookData} />
+        </Modal>
+
+        <Button
+          title="Lookup"
+          accessibilityLabel="Lookup information."
+          onPress={() => setModalVisible(true)}
+        ></Button>
+      </View>
+    );
+  } else if (recommendationProgress === "GOT_SUBJECTS") {
+    LookupAuthorsWorks();
+    return (
+      <View style={styles.container}>
+        <Modal
+          animationType="none"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <GotSubjectsModalContents bookData={bookData} />
+        </Modal>
+
+        <Button
+          title="Lookup"
+          accessibilityLabel="Lookup information."
+          onPress={() => setModalVisible(true)}
+        ></Button>
+      </View>
+    );
+  } else if (recommendationProgress === "GOT_AUTHORS_WORKS") {
+    LookupRelatedBooks(subjectData);
+    return (
+      <View style={styles.container}>
+        <Modal
+          animationType="none"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <GotAuthorsWorksModalContents bookData={bookData} />
+        </Modal>
+
+        <Button
+          title="Lookup"
+          accessibilityLabel="Lookup information."
+          onPress={() => setModalVisible(true)}
+        ></Button>
+      </View>
+    );
+  } else if (recommendationProgress === "GOT_RELATED_BOOKS") {
+    return (
+      <View>
+        <Text>Related Books</Text>
+      </View>
+    );
+  } else {
+    return (
+      <View>
+        <Text>Error</Text>
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
@@ -95,45 +168,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-  },
-});
-
-const modalStyles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    marginTop: 100,
-  },
-  modalView: {
-    margin: 15,
-    backgroundColor: "#f6f6f6",
-    borderRadius: 25,
-    paddingTop: 30,
-    paddingBottom: 5,
-    alignItems: "center",
-    elevation: 15,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-
-  buttonClose: {
-    backgroundColor: "#e12222",
-    padding: 8,
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  indicator: {
-    position: "absolute",
   },
 });
 
