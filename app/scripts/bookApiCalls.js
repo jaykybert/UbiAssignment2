@@ -9,7 +9,9 @@ export async function GetBookByISBN(isbn) {
 
     bookData = {
       title: data["title"],
-      firstSentenec: data["first_sentence"]["value"],
+      firstSentence: data.hasOwnProperty("first_sentence")
+        ? data["first_sentence"]["value"]
+        : "",
       publisher: data["publishers"][0],
       pages: data["number_of_pages"],
       published: data["publish_date"],
@@ -19,8 +21,8 @@ export async function GetBookByISBN(isbn) {
     };
     return bookData;
   } catch (e) {
-    console.warn(e);
-    return {};
+    //console.warn(e);
+    return { error: "Invalid request" };
   }
 }
 
@@ -39,10 +41,17 @@ export async function GetAuthorsWorksByKey(authorKey) {
     authorWorks = [];
 
     for (let i = 0; i < data["entries"].length; i++) {
-      // Title & Cover
+      // Title
       work = { title: data["entries"][i]["title"] };
 
-      let coverUrl = `https://covers.openlibrary.org/b/id/${data["entries"][i]["covers"][0]}}-M.jpg`;
+      // Cover
+      let coverUrl;
+      if (data["entries"][i].hasOwnProperty("covers")) {
+        coverUrl = `https://covers.openlibrary.org/b/id/${data["entries"][i]["covers"][0]}}-M.jpg`;
+      } else {
+        coverUrl = "../assets/default-book.bmp";
+      }
+
       work["cover"] = coverUrl;
 
       // Publish Date
@@ -84,26 +93,8 @@ export async function GetSubjectsByWorkKey(workKey) {
 
     subjectData = {
       bookDescription: data["description"],
-      subjectPlaces: [],
-      subjectTimes: [],
       subjects: [],
     };
-
-    // Get first two subject places.
-    for (let i = 0; i < data["subject_places"].length; i++) {
-      subjectData["subjectPlaces"].push(data["subject_places"][i]);
-      if (i === 2) {
-        break;
-      }
-    }
-
-    // Get first two subject times.
-    for (let i = 0; i < data["subject_times"].length; i++) {
-      subjectData["subjectTimes"].push(data["subject_times"][i]);
-      if (i === 2) {
-        break;
-      }
-    }
 
     // Get first two subjects.
     for (let i = 0; i < data["subjects"].length; i++) {

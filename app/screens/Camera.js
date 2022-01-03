@@ -15,6 +15,8 @@ import NotStartedModalContents from "../components/NotStartedModalContents";
 import GotBookModalContents from "../components/GotBookModalContents";
 import GotSubjectsModalContents from "../components/GotSubjectsModalContents";
 import GotAuthorsWorksModalContents from "../components/GotAuthorsWorksModalContents";
+import ErrorModalContents from "../components/ErrorModalContents";
+import RecommendationModal from "../components/RecommendationModal";
 // Utilities
 import {
   GetAuthorsWorksByKey,
@@ -29,6 +31,8 @@ import {
  */
 const Camera = () => {
   const [bookData, setBookData] = useState();
+  const [authorWorks, setAuthorWorks] = useState();
+  const [relatedBooks, setRelatedBooks] = useState();
   const [subjectData, setSubjectData] = useState();
   const [modalVisible, setModalVisible] = useState(false);
   const [recommendationProgress, setRecommendationProgress] =
@@ -36,9 +40,20 @@ const Camera = () => {
 
   const LookupBook = async () => {
     // Book by ISBN
+
+    // Mr Fox 0140306765
+    // Histories 9780140449082
+    // Zen 9780099786405
+
     let bookData = await GetBookByISBN("0140306765");
-    setBookData(bookData);
-    setRecommendationProgress("GOT_BOOK");
+    console.log(bookData);
+
+    if (bookData.hasOwnProperty("error")) {
+      setRecommendationProgress("ERROR");
+    } else {
+      setBookData(bookData);
+      setRecommendationProgress("GOT_BOOK");
+    }
   };
 
   const LookupSubjects = async () => {
@@ -51,12 +66,14 @@ const Camera = () => {
   const LookupAuthorsWorks = async () => {
     // (Primary) Author's Works by Key
     let authorsWorks = await GetAuthorsWorksByKey(bookData["authorKey"]);
+    setAuthorWorks(authorsWorks);
     setRecommendationProgress("GOT_AUTHORS_WORKS");
   };
 
   const LookupRelatedBooks = async (subjects) => {
     // Related Books by Subject
     let relatedBooks = await GetBooksBySubject(subjects);
+    setRelatedBooks(relatedBooks);
     setRecommendationProgress("GOT_RELATED_BOOKS");
   };
 
@@ -150,14 +167,44 @@ const Camera = () => {
     );
   } else if (recommendationProgress === "GOT_RELATED_BOOKS") {
     return (
-      <View>
-        <Text>Related Books</Text>
+      <View style={styles.container}>
+        <Modal
+          animationType="none"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <RecommendationModal />
+        </Modal>
+
+        <Button
+          title="Lookup"
+          accessibilityLabel="Lookup information."
+          onPress={() => setModalVisible(true)}
+        ></Button>
       </View>
     );
-  } else {
+  } else if (recommendationProgress === "ERROR") {
     return (
-      <View>
-        <Text>Error</Text>
+      <View style={styles.container}>
+        <Modal
+          animationType="none"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <ErrorModalContents />
+        </Modal>
+
+        <Button
+          title="Lookup"
+          accessibilityLabel="Lookup information."
+          onPress={() => setModalVisible(true)}
+        ></Button>
       </View>
     );
   }

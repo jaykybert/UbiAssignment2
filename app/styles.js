@@ -8,6 +8,10 @@ export const modal = StyleSheet.create({
     width: 40,
     height: 40,
   },
+  imageLarge: {
+    width: 60,
+    height: 60,
+  },
   centeredView: {
     flex: 1,
     marginTop: 100,
