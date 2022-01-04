@@ -2,13 +2,13 @@
 import React from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 // Styles
-import { modal } from "../styles";
+import { modal } from "../../styles";
 
 /**
  * TODO
  * @returns
  */
-const NotStartedModalContents = () => {
+const ModalNotStarted = () => {
   return (
     <View style={modal.centeredView}>
       <View style={modal.modalView}>
@@ -19,4 +19,4 @@ const NotStartedModalContents = () => {
   );
 };
 
-export default NotStartedModalContents;
+export default ModalNotStarted;

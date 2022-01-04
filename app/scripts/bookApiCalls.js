@@ -31,7 +31,7 @@ export async function GetBookByISBN(isbn) {
  * @param {*} authorId
  * @returns
  */
-export async function GetAuthorsWorksByKey(authorKey) {
+export async function GetAuthorWorksByKey(authorKey) {
   try {
     let response = await fetch(
       `https://openlibrary.org${authorKey}/works.json?limit=20`
@@ -42,14 +42,16 @@ export async function GetAuthorsWorksByKey(authorKey) {
 
     for (let i = 0; i < data["entries"].length; i++) {
       // Title
-      work = { title: data["entries"][i]["title"] };
+      work = {
+        title: data["entries"][i]["title"],
+        key: data["entries"][i]["key"],
+        recommendationReason: "author",
+      };
 
       // Cover
-      let coverUrl;
+      let coverUrl = "";
       if (data["entries"][i].hasOwnProperty("covers")) {
-        coverUrl = `https://covers.openlibrary.org/b/id/${data["entries"][i]["covers"][0]}}-M.jpg`;
-      } else {
-        coverUrl = "../assets/default-book.bmp";
+        coverUrl = `https://covers.openlibrary.org/b/id/${data["entries"][i]["covers"][0]}-M.jpg`;
       }
 
       work["cover"] = coverUrl;
@@ -86,7 +88,7 @@ export async function GetAuthorsWorksByKey(authorKey) {
  * @param {*} workKey
  * @returns
  */
-export async function GetSubjectsByWorkKey(workKey) {
+export async function GetSubjectsByKey(workKey) {
   try {
     let response = await fetch(`https://openlibrary.org${workKey}.json`);
     let data = await response.json();
@@ -134,6 +136,8 @@ export async function GetBooksBySubject(subjects) {
         author: data["works"][j]["authors"][0]["name"],
         subjects: data["works"][j]["subject"].slice(0, 5),
         lookupSubject: subjects["subjects"][i],
+        recommendationReason: "subject",
+        key: data["works"][j]["key"],
       };
       let coverUrl = `https://covers.openlibrary.org/b/id/${data["works"][j]["cover_id"]}-M.jpg`;
       work["cover"] = coverUrl;
@@ -146,13 +150,4 @@ export async function GetBooksBySubject(subjects) {
     }
   }
   return works;
-  /*
-  for (let i = 0; i < subjects["subjectPlaces"].length; i++) {
-    // PLACES REQS.
-  }
-
-  for (let i = 0; i < subjects["subjectTimes"].length; i++) {
-    // TIMES REQS.
-  }
-  */
 }

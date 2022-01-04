@@ -1,28 +1,19 @@
 // React & Navigation
 import React, { useState } from "react";
-import {
-  ActivityIndicator,
-  Button,
-  Image,
-  Modal,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Button, Modal, StyleSheet, View } from "react-native";
 // Components
-import NotStartedModalContents from "../components/NotStartedModalContents";
-import GotBookModalContents from "../components/GotBookModalContents";
-import GotSubjectsModalContents from "../components/GotSubjectsModalContents";
-import GotAuthorsWorksModalContents from "../components/GotAuthorsWorksModalContents";
-import ErrorModalContents from "../components/ErrorModalContents";
-import RecommendationModal from "../components/RecommendationModal";
+import ModalNotStarted from "../components/modal-views/ModalNotStarted.js";
+import ModalGotBook from "../components/modal-views/ModalGotBook";
+import ModalGotSubjects from "../components/modal-views/ModalGotSubjects";
+import ModalGotAuthorWorks from "../components/modal-views/ModalGotAuthorWorks";
+import ModalGotRecommendedBooks from "../components/modal-views/ModalGotRecommendedBooks";
+import ModalError from "../components/modal-views/ModalError";
 // Utilities
 import {
-  GetAuthorsWorksByKey,
+  GetAuthorWorksByKey,
   GetBookByISBN,
   GetBooksBySubject,
-  GetSubjectsByWorkKey,
+  GetSubjectsByKey,
 } from "../scripts/bookApiCalls";
 
 /**
@@ -30,54 +21,71 @@ import {
  * @returns {Camera}
  */
 const Camera = () => {
-  const [bookData, setBookData] = useState();
-  const [authorWorks, setAuthorWorks] = useState();
-  const [relatedBooks, setRelatedBooks] = useState();
-  const [subjectData, setSubjectData] = useState();
   const [modalVisible, setModalVisible] = useState(false);
-  const [recommendationProgress, setRecommendationProgress] =
-    useState("NOT_STARTED");
+  const [recommendationState, setRecommendationState] = useState("NOT_STARTED");
+  const [recommendationData, setRecommendationData] = useState();
 
+  /**
+   * TODO
+   */
   const LookupBook = async () => {
     // Book by ISBN
-
     // Mr Fox 0140306765
     // Histories 9780140449082
     // Zen 9780099786405
 
-    let bookData = await GetBookByISBN("0140306765");
-    console.log(bookData);
+    let book = await GetBookByISBN("9780099786405");
 
-    if (bookData.hasOwnProperty("error")) {
-      setRecommendationProgress("ERROR");
+    if (book.hasOwnProperty("error")) {
+      setRecommendationState("ERROR");
     } else {
-      setBookData(bookData);
-      setRecommendationProgress("GOT_BOOK");
+      setRecommendationData({ book: bookData });
+      setRecommendationState("GOT_BOOK");
     }
   };
 
+  /**
+   * TODO
+   */
   const LookupSubjects = async () => {
-    // Book Subjects by Key
-    let subjects = await GetSubjectsByWorkKey(bookData["workKey"]);
-    setSubjectData(subjects);
-    setRecommendationProgress("GOT_SUBJECTS");
+    let subjects = await GetSubjectsByKey(
+      recommendationData["book"]["workKey"]
+    );
+    setRecommendationState("GOT_SUBJECTS");
+    let recDataCopy = recommendationData;
+    recDataCopy["subjects"] = subjects;
+    setRecommendationData(recDataCopy);
   };
 
+  /**
+   * TODO
+   */
   const LookupAuthorsWorks = async () => {
-    // (Primary) Author's Works by Key
-    let authorsWorks = await GetAuthorsWorksByKey(bookData["authorKey"]);
-    setAuthorWorks(authorsWorks);
-    setRecommendationProgress("GOT_AUTHORS_WORKS");
+    let works = await GetAuthorWorksByKey(
+      recommendationData["book"]["authorKey"]
+    );
+    setRecommendationState("GOT_AUTHOR_WORKS");
+    let recDataCopy = recommendationData;
+    recDataCopy["recommendations"] = works;
+    setRecommendationData(recDataCopy);
   };
 
-  const LookupRelatedBooks = async (subjects) => {
-    // Related Books by Subject
-    let relatedBooks = await GetBooksBySubject(subjects);
-    setRelatedBooks(relatedBooks);
-    setRecommendationProgress("GOT_RELATED_BOOKS");
+  /**
+   * TODO
+   * @param {*} subjects
+   */
+  const LookupRecommendedBooks = async (subjects) => {
+    let books = await GetBooksBySubject(subjects);
+    setRecommendationState("GOT_RECOMMENDED_BOOKS");
+    let recDataCopy = recommendationData;
+    for (let i = 0; i < books.length; i++) {
+      recDataCopy["recommendations"].push(books[i]);
+    }
+    setRecommendationData(recDataCopy);
   };
 
-  if (recommendationProgress === "NOT_STARTED") {
+  // Return Not Started Modal
+  if (recommendationState === "NOT_STARTED") {
     return (
       <View style={styles.container}>
         <Modal
@@ -89,9 +97,8 @@ const Camera = () => {
             setModalVisible(!modalVisible);
           }}
         >
-          <NotStartedModalContents />
+          <ModalNotStarted />
         </Modal>
-
         <Button
           title="Lookup"
           accessibilityLabel="Lookup information."
@@ -99,8 +106,14 @@ const Camera = () => {
         ></Button>
       </View>
     );
-  } else if (recommendationProgress === "GOT_BOOK") {
-    LookupSubjects();
+  }
+
+  // Return Got Book Modal
+  else if (recommendationState === "GOT_BOOK") {
+    if (!recommendationData.hasOwnProperty("subjects")) {
+      LookupSubjects();
+    }
+
     return (
       <View style={styles.container}>
         <Modal
@@ -111,9 +124,8 @@ const Camera = () => {
             setModalVisible(!modalVisible);
           }}
         >
-          <GotBookModalContents bookData={bookData} />
+          <ModalGotBook bookData={recommendationData["book"]} />
         </Modal>
-
         <Button
           title="Lookup"
           accessibilityLabel="Lookup information."
@@ -121,8 +133,14 @@ const Camera = () => {
         ></Button>
       </View>
     );
-  } else if (recommendationProgress === "GOT_SUBJECTS") {
-    LookupAuthorsWorks();
+  }
+
+  // Return Got Subjects Modal
+  else if (recommendationState === "GOT_SUBJECTS") {
+    if (!recommendationData.hasOwnProperty("recommendations")) {
+      LookupAuthorsWorks();
+    }
+
     return (
       <View style={styles.container}>
         <Modal
@@ -133,9 +151,8 @@ const Camera = () => {
             setModalVisible(!modalVisible);
           }}
         >
-          <GotSubjectsModalContents bookData={bookData} />
+          <ModalGotSubjects bookData={recommendationData["book"]} />
         </Modal>
-
         <Button
           title="Lookup"
           accessibilityLabel="Lookup information."
@@ -143,8 +160,14 @@ const Camera = () => {
         ></Button>
       </View>
     );
-  } else if (recommendationProgress === "GOT_AUTHORS_WORKS") {
-    LookupRelatedBooks(subjectData);
+  }
+
+  // Return Got Author Works Modal
+  else if (recommendationState === "GOT_AUTHOR_WORKS") {
+    if (!recommendationData.hasOwnProperty("recommendations")) {
+      LookupRecommendedBooks(subjectData);
+    }
+
     return (
       <View style={styles.container}>
         <Modal
@@ -155,9 +178,8 @@ const Camera = () => {
             setModalVisible(!modalVisible);
           }}
         >
-          <GotAuthorsWorksModalContents bookData={bookData} />
+          <ModalGotAuthorWorks bookData={recommendationData["book"]} />
         </Modal>
-
         <Button
           title="Lookup"
           accessibilityLabel="Lookup information."
@@ -165,7 +187,10 @@ const Camera = () => {
         ></Button>
       </View>
     );
-  } else if (recommendationProgress === "GOT_RELATED_BOOKS") {
+  }
+
+  // Return Got Recommended Books Modal
+  else if (recommendationState === "GOT_RECOMMENDED_BOOKS") {
     return (
       <View style={styles.container}>
         <Modal
@@ -176,9 +201,10 @@ const Camera = () => {
             setModalVisible(!modalVisible);
           }}
         >
-          <RecommendationModal />
+          <ModalGotRecommendedBooks
+            recBooks={recommendationData["recommendations"]}
+          />
         </Modal>
-
         <Button
           title="Lookup"
           accessibilityLabel="Lookup information."
@@ -186,7 +212,10 @@ const Camera = () => {
         ></Button>
       </View>
     );
-  } else if (recommendationProgress === "ERROR") {
+  }
+
+  // Return Error Modal
+  else if (recommendationState === "ERROR") {
     return (
       <View style={styles.container}>
         <Modal
@@ -197,9 +226,8 @@ const Camera = () => {
             setModalVisible(!modalVisible);
           }}
         >
-          <ErrorModalContents />
+          <ModalError />
         </Modal>
-
         <Button
           title="Lookup"
           accessibilityLabel="Lookup information."
@@ -214,7 +242,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
+
+    height: 550,
   },
 });
 

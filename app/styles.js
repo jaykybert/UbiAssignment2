@@ -1,20 +1,22 @@
+// React
 import { StyleSheet } from "react-native";
 
-/**
- * TODO
- */
+// Colours
+export const colors = {
+  gold: "#ffd327",
+  darkGreen: "#256f5a",
+  black: "#000000",
+  white: "#ffffff",
+};
+
 export const modal = StyleSheet.create({
   image: {
     width: 40,
     height: 40,
   },
-  imageLarge: {
-    width: 60,
-    height: 60,
-  },
   centeredView: {
     flex: 1,
-    marginTop: 100,
+    marginTop: 70,
   },
   modalView: {
     margin: 15,
@@ -25,27 +27,47 @@ export const modal = StyleSheet.create({
     alignItems: "center",
     elevation: 15,
   },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
+});
 
-  buttonClose: {
-    backgroundColor: "#e12222",
-    padding: 8,
+export const authorWorks = StyleSheet.create({
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopColor: colors.darkGreen,
+    borderTopWidth: 4,
+    marginBottom: 5,
+    paddingHorizontal: 5,
+    flex: 1,
   },
-  textStyle: {
-    color: "white",
+  title: {
+    color: "#262727",
+    fontSize: 18,
     fontWeight: "bold",
-    textAlign: "center",
   },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-    fontWeight: "bold",
+  cover: {
+    height: 200,
+    width: 140,
   },
-  indicator: {
-    position: "absolute",
+  author: {
+    fontStyle: "italic",
+  },
+  content: {
+    flexDirection: "row",
+    marginTop: 10,
+  },
+  imageView: {
+    marginLeft: 20,
+    marginRight: 5,
+  },
+  textView: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  tagsView: {},
+  favouriteText: {
+    fontSize: 12,
+    fontStyle: "italic",
+    marginTop: -10,
   },
 });
