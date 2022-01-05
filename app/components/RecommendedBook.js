@@ -25,6 +25,7 @@ import { colors, authorWorks } from "../styles";
  * @returns
  */
 const RecommendedBook = ({ book, onPress }) => {
+  console.log(book);
   const [favourited, setFavourited] = useState(false);
 
   /**

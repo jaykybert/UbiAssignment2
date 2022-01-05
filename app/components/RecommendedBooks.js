@@ -4,7 +4,7 @@
 
 // React
 import React, { useState } from "react";
-import { Alert, Button, FlatList, View } from "react-native";
+import { ActivityIndicator, Alert, Button, FlatList, View } from "react-native";
 // Components
 import RecommendedBook from "./RecommendedBook";
 
@@ -29,9 +29,9 @@ const RecommendedBooks = ({ recBooks }) => {
   };
 
   return (
-    <View style={{ height: 450 }}>
+    <View style={{ height: 575 }}>
       <FlatList
-        data={works}
+        data={recBooks}
         keyExtractor={(item) => item.key}
         renderItem={({ item }) => (
           <RecommendedBook book={item} onPress={AddToFavourites} />

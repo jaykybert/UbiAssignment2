@@ -9,7 +9,7 @@ import { modal } from "../../styles";
  * @param {*} param0
  * @returns
  */
-const ModalGotSubjects = ({ bookData }) => {
+const ModalGotSubjects = ({ book }) => {
   return (
     <View style={modal.centeredView}>
       <View style={modal.modalView}>
@@ -17,10 +17,8 @@ const ModalGotSubjects = ({ bookData }) => {
           source={require("../../assets/complete.png")}
           style={modal.image}
         />
-        <Text>{bookData["title"]}</Text>
-        <Image
-          source={{ uri: bookData["coverUrl"], width: 150, height: 220 }}
-        />
+        <Text>{book["title"]}</Text>
+        <Image source={{ uri: book["coverUrl"], width: 150, height: 220 }} />
         <Text>Got subjects.</Text>
         <Image
           source={require("../../assets/complete.png")}

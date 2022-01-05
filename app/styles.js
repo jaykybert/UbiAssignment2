@@ -9,10 +9,20 @@ export const colors = {
   white: "#ffffff",
 };
 
+// Container
+export const container = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.black,
+  },
+});
+
+// Modal
 export const modal = StyleSheet.create({
   image: {
     width: 40,
     height: 40,
+    marginVertical: 5,
   },
   centeredView: {
     flex: 1,
@@ -22,8 +32,7 @@ export const modal = StyleSheet.create({
     margin: 15,
     backgroundColor: "#f6f6f6",
     borderRadius: 25,
-    paddingTop: 30,
-    paddingBottom: 5,
+    paddingTop: 10,
     alignItems: "center",
     elevation: 15,
   },

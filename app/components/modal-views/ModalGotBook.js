@@ -9,7 +9,7 @@ import { modal } from "../../styles";
  * @param {*} param0
  * @returns
  */
-const ModalGotBook = ({ bookData }) => {
+const ModalGotBook = ({ book }) => {
   return (
     <View style={modal.centeredView}>
       <View style={modal.modalView}>
@@ -17,10 +17,8 @@ const ModalGotBook = ({ bookData }) => {
           source={require("../../assets/complete.png")}
           style={modal.image}
         />
-        <Text>{bookData["title"]}</Text>
-        <Image
-          source={{ uri: bookData["coverUrl"], width: 150, height: 220 }}
-        />
+        <Text>{book["title"]}</Text>
+        <Image source={{ uri: book["coverUrl"], width: 150, height: 220 }} />
         <Text>Getting book subjects...</Text>
         <ActivityIndicator size="large" color="black" />
       </View>
