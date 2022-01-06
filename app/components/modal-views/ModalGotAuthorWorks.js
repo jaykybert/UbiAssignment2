@@ -2,7 +2,7 @@
 import React from "react";
 import { ActivityIndicator, Image, Text, View } from "react-native";
 // Styles
-import { modal } from "../../styles";
+import { authorWorks, modal } from "../../styles";
 
 /**
  * TODO
@@ -10,6 +10,20 @@ import { modal } from "../../styles";
  * @returns
  */
 const ModalGotAuthorWorks = ({ book }) => {
+  let cover;
+  // No cover url.
+  if (book["cover"] === "") {
+    cover = (
+      <Image
+        source={require("../../assets/default-book.bmp")}
+        style={authorWorks.cover}
+      ></Image>
+    );
+  }
+  // Cover url.
+  else {
+    cover = <Image source={{ uri: book["cover"], width: 150, height: 220 }} />;
+  }
   return (
     <View style={modal.centeredView}>
       <View style={modal.modalView}>
@@ -18,7 +32,15 @@ const ModalGotAuthorWorks = ({ book }) => {
           style={modal.image}
         />
         <Text>{book["title"]}</Text>
-        <Image source={{ uri: book["coverUrl"], width: 150, height: 220 }} />
+        <Text>{book["author"]}</Text>
+        {cover}
+
+        <Text>Got author.</Text>
+        <Image
+          source={require("../../assets/complete.png")}
+          style={modal.image}
+        />
+
         <Text>Got subjects.</Text>
         <Image
           source={require("../../assets/complete.png")}

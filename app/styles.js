@@ -9,11 +9,41 @@ export const colors = {
   white: "#ffffff",
 };
 
+// App
+export const app = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
+
+// Text Input
+export const input = StyleSheet.create({
+  row: {
+    borderWidth: 2,
+    borderRadius: 5,
+    borderColor: "#000",
+    flexDirection: "row",
+    margin: 3,
+    paddingVertical: 0,
+  },
+  inputView: {
+    paddingLeft: 10,
+    flex: 1,
+  },
+  inputText: {
+    fontSize: 24,
+    fontStyle: "italic",
+  },
+});
+
 // Container
 export const container = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.black,
+    backgroundColor: colors.white,
   },
 });
 

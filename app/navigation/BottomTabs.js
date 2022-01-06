@@ -39,7 +39,7 @@ const BottomTabs = () => {
         component={Camera}
         options={{
           tabBarColor: "#256f5a",
-          tabBarLabel: "Scan",
+          tabBarLabel: "Scan ISBN",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="camera" color={color} size={24} />
           ),

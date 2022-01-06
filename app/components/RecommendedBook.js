@@ -25,7 +25,6 @@ import { colors, authorWorks } from "../styles";
  * @returns
  */
 const RecommendedBook = ({ book, onPress }) => {
-  console.log(book);
   const [favourited, setFavourited] = useState(false);
 
   /**
@@ -44,19 +43,18 @@ const RecommendedBook = ({ book, onPress }) => {
   };
 
   let cover;
+  // Cover url.
+  if (book["cover"] !== "") {
+    cover = <Image source={{ uri: book["cover"], width: 120, height: 200 }} />;
+  }
   // No cover url.
-  if (book["cover"] === "") {
+  else {
     cover = (
       <Image
         source={require("../assets/default-book.bmp")}
         style={authorWorks.cover}
       ></Image>
     );
-  }
-  // Cover url provided.
-  else {
-    // Book cover provided.
-    cover = <Image source={{ uri: book["cover"], width: 120, height: 200 }} />;
   }
 
   let favouriteStar;
@@ -103,9 +101,12 @@ const RecommendedBook = ({ book, onPress }) => {
     return (
       <View style={authorWorks.container}>
         <Text style={authorWorks.title}>{book["title"]}</Text>
+        <Text style={authorWorks.author}>{book["author"]}</Text>
 
-        <Text>If you like this author...</Text>
-        {cover}
+        <View style={authorWorks.content}>
+          <View style={authorWorks.imageView}>{cover}</View>
+          {favouriteStar}
+        </View>
       </View>
     );
   }
@@ -119,9 +120,7 @@ const RecommendedBook = ({ book, onPress }) => {
         <Text style={authorWorks.author}>{book["author"]}</Text>
 
         <View style={authorWorks.content}>
-          <View style={authorWorks.imageView}>
-            <Image source={{ uri: book["cover"], width: 120, height: 200 }} />
-          </View>
+          <View style={authorWorks.imageView}>{cover}</View>
           {favouriteStar}
         </View>
         <View style={authorWorks.tagsView}>

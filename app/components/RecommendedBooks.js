@@ -4,28 +4,64 @@
 
 // React
 import React, { useState } from "react";
-import { ActivityIndicator, Alert, Button, FlatList, View } from "react-native";
+import { Button, FlatList, View } from "react-native";
 // Components
 import RecommendedBook from "./RecommendedBook";
+// Utilities
+import * as db from "../database";
 
 /**
  * TODO
  * @param {*} param0
  * @returns
  */
-const RecommendedBooks = ({ recBooks }) => {
+const RecommendedBooks = ({ recBooks, lookupBook, updateState }) => {
   const [books, setBooks] = useState(recBooks);
 
   const AddToFavourites = (key, isFavourite) => {
     for (let i = 0; i < books.length; i++) {
       if (books[i]["key"] === key) {
         // Match, update property
-        let booksCopy = books;
+        let booksCopy = JSON.parse(JSON.stringify(books));
 
         booksCopy[i]["favourited"] = isFavourite;
         setBooks(booksCopy);
       }
     }
+  };
+
+  /**
+   * Callback function - called from the success callback of tx.executeSql().
+   * @param {*} lookupId
+   */
+  const onInsertedLookup = (lookupId) => {
+    for (let i = 0; i < books.length; i++) {
+      if (books[i]["recommendationReason"] === "author") {
+        db.insertRecommendationByAuthor(books[i], lookupId);
+      } else if (books[i]["recommendationReason"] === "subject") {
+        db.insertRecommendationBySubject(books[i], lookupId);
+      }
+    }
+
+    // Set state to LOOKUP_COMPLETE (via props)?
+    // Set modal to hidden
+    updateState({ state: "LOOKUP_COMPLETE" });
+  };
+
+  const SaveToDatabase = () => {
+    db.insertLookup(lookupBook, onInsertedLookup);
+  };
+
+  const WipeDatabase = () => {
+    db.deleteLookup();
+    db.deleteRecommendationsByAuthor();
+    db.deleteRecommendationsBySubject();
+  };
+
+  const CreateDatabase = () => {
+    db.createLookup();
+    db.createRecommendationsByAuthor();
+    db.createRecommendationsBySubject();
   };
 
   return (
@@ -42,9 +78,10 @@ const RecommendedBooks = ({ recBooks }) => {
         <Button
           title="Save to Wishlist"
           onPress={() => {
-            Alert.alert({ books });
+            console.log("saving...");
+            SaveToDatabase();
           }}
-        ></Button>
+        />
       </View>
     </View>
   );

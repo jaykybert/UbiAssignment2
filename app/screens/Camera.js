@@ -1,6 +1,13 @@
 // React & Navigation
 import React, { useState } from "react";
-import { Button, Modal, StyleSheet, View } from "react-native";
+import {
+  AlertIOS,
+  Button,
+  Modal,
+  Platform,
+  ToastAndroid,
+  View,
+} from "react-native";
 // Components
 import ModalNotStarted from "../components/modal-views/ModalNotStarted.js";
 import ModalGotBook from "../components/modal-views/ModalGotBook";
@@ -8,10 +15,12 @@ import ModalGotSubjects from "../components/modal-views/ModalGotSubjects";
 import ModalGotAuthorWorks from "../components/modal-views/ModalGotAuthorWorks";
 import ModalGotRecommendedBooks from "../components/modal-views/ModalGotRecommendedBooks";
 import ModalError from "../components/modal-views/ModalError";
+import InputISBN from "../components/InputISBN.js";
 // Styles
 import { container } from "../styles.js";
 // Utilities
 import {
+  GetAuthorByKey,
   GetAuthorWorksByKey,
   GetBookByISBN,
   GetBooksBySubject,
@@ -29,7 +38,7 @@ const Camera = () => {
     authorWorks: [],
     recommendedWorks: [],
   });
-
+  console.log(recommendations["state"]);
   /**
    * TODO
    */
@@ -38,18 +47,33 @@ const Camera = () => {
     // Mr Fox 0140306765
     // Histories 9780140449082
     // Zen 9780099786405
+    // Tender 9780241341483
 
-    let book = await GetBookByISBN("9780099786405");
+    let book;
+
+    console.log(isbn);
+
+    book = await GetBookByISBN("9780099786405");
 
     if (book.hasOwnProperty("error")) {
       setRecommendations({ state: "ERROR" });
     } else {
-      // Can't set recCopy = recommendations. Won't re-render.
+      // Can't set recCopy = recommendations. Needs different reference, otherwise won't re-render.
       let recCopy = JSON.parse(JSON.stringify(recommendations));
       recCopy["book"] = book;
       recCopy["state"] = "GOT_BOOK";
       setRecommendations(recCopy);
     }
+  };
+
+  const LookupAuthor = async () => {
+    let author = await GetAuthorByKey(recommendations["book"]["authorKey"]);
+
+    let recCopy = JSON.parse(JSON.stringify(recommendations));
+    recCopy["book"]["author"] = author["name"];
+    recCopy["state"] = "GOT_AUTHOR";
+
+    setRecommendations(recCopy);
   };
 
   /**
@@ -68,12 +92,18 @@ const Camera = () => {
   /**
    * TODO
    */
-  const LookupAuthorsWorks = async () => {
+  const LookupAuthorWorks = async () => {
     let works = await GetAuthorWorksByKey(recommendations["book"]["authorKey"]);
+
+    // Add Author name to each work.
+    for (let i = 0; i < works.length; i++) {
+      works[i]["author"] = recommendations["book"]["author"];
+    }
 
     let recCopy = JSON.parse(JSON.stringify(recommendations));
     recCopy["state"] = "GOT_AUTHOR_WORKS";
     recCopy["authorWorks"] = works;
+
     setRecommendations(recCopy);
   };
 
@@ -106,6 +136,9 @@ const Camera = () => {
         >
           <ModalNotStarted />
         </Modal>
+
+        <InputISBN startLookup={LookupBook} setModalVisible={setModalVisible} />
+
         <Button
           title="Lookup"
           accessibilityLabel="Lookup information."
@@ -117,7 +150,7 @@ const Camera = () => {
 
   // Return Got Book Modal
   else if (recommendations["state"] === "GOT_BOOK") {
-    LookupSubjects();
+    LookupAuthor();
 
     return (
       <View style={container.container}>
@@ -138,11 +171,32 @@ const Camera = () => {
         ></Button>
       </View>
     );
+  } else if (recommendations["state"] === "GOT_AUTHOR") {
+    LookupSubjects();
+    return (
+      <View style={container.container}>
+        <Modal
+          animationType="none"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <ModalGotSubjects book={recommendations["book"]} />
+        </Modal>
+        <Button
+          title="Lookup"
+          accessibilityLabel="Lookup information."
+          onPress={() => setModalVisible(true)}
+        ></Button>
+      </View>
+    );
   }
 
   // Return Got Subjects Modal
   else if (recommendations["state"] === "GOT_SUBJECTS") {
-    LookupAuthorsWorks();
+    LookupAuthorWorks();
 
     return (
       <View style={container.container}>
@@ -192,7 +246,11 @@ const Camera = () => {
 
   // Return Got Recommended Books Modal
   else if (recommendations["state"] === "GOT_RECOMMENDED_BOOKS") {
-    let allRecommendations = recommendations["authorWorks"].concat(
+    let lookupBook = recommendations["book"];
+    lookupBook["description"] = recommendations["subjects"]["description"];
+
+    // TODO: Remove duplicate recommendations.
+    let recBooks = recommendations["authorWorks"].concat(
       recommendations["recommendedWorks"]
     );
 
@@ -206,7 +264,11 @@ const Camera = () => {
             setModalVisible(!modalVisible);
           }}
         >
-          <ModalGotRecommendedBooks recBooks={allRecommendations} />
+          <ModalGotRecommendedBooks
+            recBooks={recBooks}
+            lookupBook={lookupBook}
+            updateState={setRecommendations}
+          />
         </Modal>
         <Button
           title="Lookup"
@@ -215,6 +277,23 @@ const Camera = () => {
         ></Button>
       </View>
     );
+  }
+
+  // Complete Modal
+  else if (recommendations["state"] === "LOOKUP_COMPLETE") {
+    if (Platform.OS === "android") {
+      ToastAndroid.show("Saved Wishlist!", ToastAndroid.SHORT);
+    } else {
+      AlertIOS.alert("Saved Wishlist!");
+    }
+
+    // Default States
+    setModalVisible(!modalVisible);
+    setRecommendations({
+      state: "NOT_STARTED",
+      authorWorks: [],
+      recommendedWorks: [],
+    });
   }
 
   // Return Error Modal

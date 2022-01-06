@@ -11,7 +11,7 @@ import { modal } from "../../styles";
  * @param {*} param0
  * @returns
  */
-const ModalGotRecommendedBooks = ({ recBooks }) => {
+const ModalGotRecommendedBooks = ({ recBooks, lookupBook, updateState }) => {
   return (
     <View style={modal.centeredView}>
       <View style={modal.modalView}>
@@ -20,7 +20,11 @@ const ModalGotRecommendedBooks = ({ recBooks }) => {
           style={modal.image}
         />
 
-        <RecommendedBooks recBooks={recBooks} />
+        <RecommendedBooks
+          recBooks={recBooks}
+          lookupBook={lookupBook}
+          updateState={updateState}
+        />
       </View>
     </View>
   );

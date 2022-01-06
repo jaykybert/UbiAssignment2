@@ -17,11 +17,30 @@ export async function GetBookByISBN(isbn) {
       published: data["publish_date"],
       authorKey: data["authors"][0]["key"],
       workKey: data["works"][0]["key"],
-      coverUrl: `https://covers.openlibrary.org/b/id/${data["covers"][0]}-M.jpg`,
+      cover: data.hasOwnProperty("covers")
+        ? `https://covers.openlibrary.org/b/id/${data["covers"][0]}-M.jpg`
+        : "",
     };
     return bookData;
   } catch (e) {
     //console.warn(e);
+    return { error: "Invalid request" };
+  }
+}
+
+/**
+ * TODO
+ * @param {*} authorKey
+ * @returns
+ */
+export async function GetAuthorByKey(authorKey) {
+  try {
+    let response = await fetch(`https://openlibrary.org${authorKey}.json`);
+    let data = await response.json();
+
+    return data;
+  } catch (e) {
+    console.warn(e);
     return { error: "Invalid request" };
   }
 }
@@ -60,13 +79,22 @@ export async function GetAuthorWorksByKey(authorKey) {
       if (data["entries"][i].hasOwnProperty("first_publish_date")) {
         work["published"] = data["entries"][i]["first_publish_date"];
       } else {
-        work["published"] = "No date provided.";
+        work["published"] = "Publication date unavailable.";
       }
 
       // Description
       if (data["entries"][i].hasOwnProperty("description")) {
-        work["description"] = data["entries"][i]["description"]["value"];
-      } else {
+        // Returned as a string.
+        if (typeof data["entries"][i]["description"] === "string") {
+          work["description"] = data["entries"][i]["description"];
+        }
+        // Returned as an object.
+        else {
+          work["description"] = data["entries"][i]["description"]["value"];
+        }
+      }
+      // No Description
+      else {
         work["description"] = "No description provided.";
       }
 
@@ -94,7 +122,7 @@ export async function GetSubjectsByKey(workKey) {
     let data = await response.json();
 
     subjectData = {
-      bookDescription: data["description"],
+      description: data["description"],
       subjects: [],
     };
 

@@ -9,7 +9,7 @@ import { authorWorks, modal } from "../../styles";
  * @param {*} param0
  * @returns
  */
-const ModalGotBook = ({ book }) => {
+const ModalGotAuthorWorks = ({ book }) => {
   let cover;
   // No cover url.
   if (book["cover"] === "") {
@@ -33,12 +33,19 @@ const ModalGotBook = ({ book }) => {
           style={modal.image}
         />
         <Text>{book["title"]}</Text>
+        <Text>{book["author"]}</Text>
         {cover}
-        <Text>Getting author...</Text>
+
+        <Text>Got author.</Text>
+        <Image
+          source={require("../../assets/complete.png")}
+          style={modal.image}
+        />
+        <Text>Getting subjects...</Text>
         <ActivityIndicator size="large" color="black" />
       </View>
     </View>
   );
 };
 
-export default ModalGotBook;
+export default ModalGotAuthorWorks;
