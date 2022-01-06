@@ -1,10 +1,10 @@
 // React
 import React, { useState } from "react";
-import { Button, Text, TextInput, View } from "react-native";
+import { Button, TextInput, View } from "react-native";
 // Styles
 import { input } from "../styles";
 
-const InputISBN = ({ startLookup, setModalVisible }) => {
+const InputISBN = ({ recommendations, setRecommendations }) => {
   const [text, setText] = useState("");
   return (
     <View>
@@ -21,9 +21,10 @@ const InputISBN = ({ startLookup, setModalVisible }) => {
           <Button
             title="Search"
             onPress={() => {
-              console.log("Searching for " + text);
-              setModalVisible(true);
-              startLookup(text);
+              let recCopy = JSON.parse(JSON.stringify(recommendations));
+              recCopy["state"] = "STARTED";
+              recCopy["isbn"] = text;
+              setRecommendations(recCopy);
             }}
             style={input.button}
           />

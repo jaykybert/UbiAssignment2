@@ -2,7 +2,8 @@
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 // Components
-import EmptyComponent from "../shared/EmptyComponent";
+import LookupHistoryScreen from "../screens/LookupHistoryScreen";
+import WishlistBooksScreen from "../screens/WishlistBooksScreen";
 
 const Tabs = createMaterialTopTabNavigator();
 
@@ -12,9 +13,9 @@ const Tabs = createMaterialTopTabNavigator();
  */
 const BooksTopTabs = () => {
   return (
-    <Tabs.Navigator initialRotueName="Recommended">
-      <Tabs.Screen name="Recommendations" component={EmptyComponent} />
-      <Tabs.Screen name="History" component={EmptyComponent} />
+    <Tabs.Navigator initialRotueName="Wishlist">
+      <Tabs.Screen name="Wishlist" component={WishlistBooksScreen} />
+      <Tabs.Screen name="History" component={LookupHistoryScreen} />
     </Tabs.Navigator>
   );
 };

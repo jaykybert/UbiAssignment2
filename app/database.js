@@ -154,17 +154,17 @@ export function insertRecommendationByAuthor(book, lookupId) {
   });
 }
 
-export function selectRecommendationsByAuthor() {
+export function selectRecommendationsByAuthor(onRecommendationsRetrieved) {
   db.transaction((tx) => {
     tx.executeSql(
       "SELECT * FROM recsByAuthor",
       null,
       (txObj, data) => {
-        console.log("Selected from author recs.");
-        console.log(data.rows._array);
+        console.log("AUTHOR RECS - Selected.");
+        onRecommendationsRetrieved(data.rows._array);
       },
       () => {
-        console.log("Error selecting from author recs.");
+        console.log("AUTHOR RECS - Failed to select.");
       }
     );
   });

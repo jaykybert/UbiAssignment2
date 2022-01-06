@@ -8,7 +8,7 @@ import { modal } from "../../styles";
  * TODO
  * @returns
  */
-const ModalNotStarted = () => {
+const ModalStarted = () => {
   return (
     <View style={modal.centeredView}>
       <View style={modal.modalView}>
@@ -19,4 +19,4 @@ const ModalNotStarted = () => {
   );
 };
 
-export default ModalNotStarted;
+export default ModalStarted;

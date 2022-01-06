@@ -7,6 +7,8 @@ export async function GetBookByISBN(isbn) {
     let response = await fetch(`https://openlibrary.org/isbn/${isbn}.json`);
     let data = await response.json();
 
+    console.log(data);
+
     bookData = {
       title: data["title"],
       firstSentence: data.hasOwnProperty("first_sentence")

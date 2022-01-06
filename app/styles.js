@@ -24,7 +24,8 @@ export const input = StyleSheet.create({
   row: {
     borderWidth: 2,
     borderRadius: 5,
-    borderColor: "#000",
+    borderColor: colors.black,
+    borderStyle: "solid",
     flexDirection: "row",
     margin: 3,
     paddingVertical: 0,
@@ -34,8 +35,12 @@ export const input = StyleSheet.create({
     flex: 1,
   },
   inputText: {
-    fontSize: 24,
+    fontSize: 22,
     fontStyle: "italic",
+  },
+  buttonView: {
+    borderLeftWidth: 2,
+    borderColor: colors.black,
   },
 });
 

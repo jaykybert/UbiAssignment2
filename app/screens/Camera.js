@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 // Components
-import ModalNotStarted from "../components/modal-views/ModalNotStarted.js";
+import ModalStarted from "../components/modal-views/ModalStarted.js";
 import ModalGotBook from "../components/modal-views/ModalGotBook";
 import ModalGotSubjects from "../components/modal-views/ModalGotSubjects";
 import ModalGotAuthorWorks from "../components/modal-views/ModalGotAuthorWorks";
@@ -18,7 +18,7 @@ import ModalError from "../components/modal-views/ModalError";
 import InputISBN from "../components/InputISBN.js";
 // Styles
 import { container } from "../styles.js";
-// Utilities
+// API Calls
 import {
   GetAuthorByKey,
   GetAuthorWorksByKey,
@@ -32,9 +32,10 @@ import {
  * @returns {Camera}
  */
 const Camera = () => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(true);
   const [recommendations, setRecommendations] = useState({
     state: "NOT_STARTED",
+    isbn: "",
     authorWorks: [],
     recommendedWorks: [],
   });
@@ -51,9 +52,13 @@ const Camera = () => {
 
     let book;
 
-    console.log(isbn);
+    console.log(recommendations["isbn"]);
 
-    book = await GetBookByISBN("9780099786405");
+    if (recommendations["isbn"] === "") {
+      book = await GetBookByISBN("9780099786405");
+    } else {
+      book = await GetBookByISBN(recommendations["isbn"]);
+    }
 
     if (book.hasOwnProperty("error")) {
       setRecommendations({ state: "ERROR" });
@@ -125,6 +130,27 @@ const Camera = () => {
   if (recommendations["state"] === "NOT_STARTED") {
     return (
       <View style={container.container}>
+        <InputISBN
+          recommendations={recommendations}
+          setRecommendations={setRecommendations}
+        />
+
+        <Button
+          title="Lookup"
+          accessibilityLabel="Lookup information."
+          onPress={() => {
+            let recCopy = JSON.parse(JSON.stringify(recommendations));
+            recCopy["state"] = "STARTED";
+            setRecommendations(recCopy);
+          }}
+        ></Button>
+      </View>
+    );
+  }
+  // Return Started Modal
+  else if (recommendations["state"] === "STARTED") {
+    return (
+      <View style={container.container}>
         <Modal
           animationType="none"
           transparent={true}
@@ -134,10 +160,8 @@ const Camera = () => {
             setModalVisible(!modalVisible);
           }}
         >
-          <ModalNotStarted />
+          <ModalStarted />
         </Modal>
-
-        <InputISBN startLookup={LookupBook} setModalVisible={setModalVisible} />
 
         <Button
           title="Lookup"
