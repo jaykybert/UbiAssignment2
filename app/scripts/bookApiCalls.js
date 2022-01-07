@@ -6,9 +6,6 @@ export async function GetBookByISBN(isbn) {
   try {
     let response = await fetch(`https://openlibrary.org/isbn/${isbn}.json`);
     let data = await response.json();
-
-    console.log(data);
-
     bookData = {
       title: data["title"],
       firstSentence: data.hasOwnProperty("first_sentence")
@@ -25,7 +22,6 @@ export async function GetBookByISBN(isbn) {
     };
     return bookData;
   } catch (e) {
-    //console.warn(e);
     return { error: "Invalid request" };
   }
 }
@@ -81,7 +77,7 @@ export async function GetAuthorWorksByKey(authorKey) {
       if (data["entries"][i].hasOwnProperty("first_publish_date")) {
         work["published"] = data["entries"][i]["first_publish_date"];
       } else {
-        work["published"] = "Publication date unavailable.";
+        work["published"] = "";
       }
 
       // Description

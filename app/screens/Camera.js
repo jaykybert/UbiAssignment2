@@ -49,11 +49,7 @@ const Camera = () => {
     // Histories 9780140449082
     // Zen 9780099786405
     // Tender 9780241341483
-
     let book;
-
-    console.log(recommendations["isbn"]);
-
     if (recommendations["isbn"] === "") {
       book = await GetBookByISBN("9780099786405");
     } else {
@@ -149,13 +145,13 @@ const Camera = () => {
   }
   // Return Started Modal
   else if (recommendations["state"] === "STARTED") {
+    LookupBook();
     return (
       <View style={container.container}>
         <Modal
           animationType="none"
           transparent={true}
           visible={modalVisible}
-          onShow={LookupBook}
           onRequestClose={() => {
             setModalVisible(!modalVisible);
           }}
@@ -181,7 +177,7 @@ const Camera = () => {
         <Modal
           animationType="none"
           transparent={true}
-          visible={true}
+          visible={modalVisible}
           onRequestClose={() => {
             setModalVisible(!modalVisible);
           }}
@@ -312,9 +308,10 @@ const Camera = () => {
     }
 
     // Default States
-    setModalVisible(!modalVisible);
+    //setModalVisible(true);
     setRecommendations({
       state: "NOT_STARTED",
+      isbn: "",
       authorWorks: [],
       recommendedWorks: [],
     });

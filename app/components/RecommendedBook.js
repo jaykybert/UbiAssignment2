@@ -61,7 +61,7 @@ const RecommendedBook = ({ book, onPress }) => {
   if (favourited) {
     // Gold star, unfavourite text
     favouriteStar = (
-      <View style={authorWorks.textView}>
+      <View style={authorWorks.favouriteView}>
         <TouchableHighlight
           activeOpacity={0.6}
           underlayColor="#fff"
@@ -79,7 +79,7 @@ const RecommendedBook = ({ book, onPress }) => {
   } else {
     // Outlined star, favourite this text.
     favouriteStar = (
-      <View style={authorWorks.textView}>
+      <View style={authorWorks.favouriteView}>
         <TouchableHighlight
           activeOpacity={0.6}
           underlayColor="#fff"

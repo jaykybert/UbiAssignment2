@@ -9,32 +9,11 @@ import * as db from "../database";
  * @returns
  */
 const LookupHistoryScreen = () => {
-  const [gotBooks, setGotBooks] = useState(false);
-  const [books, setBooks] = useState();
-
-  const onRecommendationsRetrieved = (recBooks) => {
-    setBooks(recBooks);
-    setGotBooks(true);
-  };
-
-  //
-  useEffect(() => {
-    db.selectRecommendationsByAuthor(onRecommendationsRetrieved);
-  }, []);
-
-  if (gotBooks) {
-    return (
-      <View>
-        <Text>got the books my friend</Text>
-      </View>
-    );
-  } else {
-    return (
-      <View>
-        <ActivityIndicator size="large" color="black" animating={!gotBooks} />
-      </View>
-    );
-  }
+  return (
+    <View>
+      <Text>lookup books</Text>
+    </View>
+  );
 };
 
 export default LookupHistoryScreen;

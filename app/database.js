@@ -24,7 +24,7 @@ export function createLookup() {
   });
 }
 
-export function deleteLookup() {
+export function deleteTableLookup() {
   db.transaction((tx) => {
     tx.executeSql(
       "DROP TABLE lookup",
@@ -112,7 +112,7 @@ export function createRecommendationsByAuthor() {
   });
 }
 
-export function deleteRecommendationsByAuthor() {
+export function deleteTableRecommendationsByAuthor() {
   db.transaction((tx) => {
     tx.executeSql(
       "DROP TABLE recsByAuthor",
@@ -124,6 +124,24 @@ export function deleteRecommendationsByAuthor() {
       () => {
         // Error Callback
         console.log("AUTHOR RECS - Failed to delete.");
+      }
+    );
+  });
+}
+
+export function deleteRecommendationByAuthor(id, onBookDeleted) {
+  db.transaction((tx) => {
+    tx.executeSql(
+      "DELETE FROM recsByAuthor WHERE id = ?",
+      [id],
+      (txObj, data) => {
+        // Success Callback
+        console.log("AUTHOR RECS - Record deleted.");
+        onBookDeleted();
+      },
+      (txObj, data) => {
+        // Error Callback
+        console.log("AUTHOR RECS - Failed to delete record.");
       }
     );
   });
@@ -170,6 +188,24 @@ export function selectRecommendationsByAuthor(onRecommendationsRetrieved) {
   });
 }
 
+export function selectFavouritedRecommendationsByAuthor(callback) {
+  db.transaction((tx) => {
+    tx.executeSql(
+      "SELECT * FROM recsByAuthor WHERE favourited=1",
+      null,
+      (txObj, data) => {
+        // Success Callback
+        console.log("AUTHOR RECS (FAVOURITED ONLY) - Selected.");
+        callback(data.rows._array);
+      },
+      (txObj, error) => {
+        // Error Callback
+        console.log("AUTHOR RECS (FAVOURITED) - Failed to select.");
+      }
+    );
+  });
+}
+
 /*
  * ---------- Recommendations By Subject Table Queries ----------
  */
@@ -193,7 +229,7 @@ export function createRecommendationsBySubject() {
   });
 }
 
-export function deleteRecommendationsBySubject() {
+export function deleteTableRecommendationsBySubject() {
   db.transaction((tx) => {
     tx.executeSql(
       "DROP TABLE recsBySubject",
@@ -203,6 +239,25 @@ export function deleteRecommendationsBySubject() {
       },
       () => {
         console.log("SUBJECTS - Couldn't delete.");
+      }
+    );
+  });
+}
+
+export function deleteRecommendationBySubject(id, onBookDeleted) {
+  db.transaction((tx) => {
+    tx.executeSql(
+      "DELETE FROM recsBySubject WHERE id=?",
+      [id],
+      (txObj, data) => {
+        // Success
+        console.log("SUBJECT DELETED - Success.");
+        onBookDeleted();
+      },
+      (txObj, error) => {
+        // Error
+        console.log("SUBJECT DELETED - Failed.");
+        console.warn(error);
       }
     );
   });
@@ -240,7 +295,7 @@ export function selectRecommendationsBySubject() {
   db.transaction((tx) => {
     tx.executeSql(
       "SELECT * FROM recsBySubject",
-      [],
+      null,
       (txObj, data) => {
         // Success
         console.log("SUBJECTS - Selected.");
@@ -248,6 +303,25 @@ export function selectRecommendationsBySubject() {
       },
       (txObj, error) => {
         console.log("SUBJECTS - Failed to select.");
+        console.warn(error);
+      }
+    );
+  });
+}
+
+export function selectFavouritedRecommendationsBySubject(callback) {
+  db.transaction((tx) => {
+    tx.executeSql(
+      "SELECT * FROM recsBySubject WHERE favourited=1",
+      null,
+      (txObj, data) => {
+        // Success
+        console.log("SUBJECTS (Favourited) - Selected.");
+        callback(data.rows._array);
+      },
+      (txObj, error) => {
+        // Error
+        console.log("SUBJECTS (Favourited) - Failed to select.");
         console.warn(error);
       }
     );

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Button, TextInput, View } from "react-native";
 // Styles
-import { input } from "../styles";
+import { colors, input } from "../styles";
 
 const InputISBN = ({ recommendations, setRecommendations }) => {
   const [text, setText] = useState("");
@@ -20,6 +20,7 @@ const InputISBN = ({ recommendations, setRecommendations }) => {
         <View style={input.buttonView}>
           <Button
             title="Search"
+            color={colors.darkGreen}
             onPress={() => {
               let recCopy = JSON.parse(JSON.stringify(recommendations));
               recCopy["state"] = "STARTED";
