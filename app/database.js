@@ -12,13 +12,11 @@ export function createLookup() {
       "CREATE TABLE IF NOT EXISTS lookup(" +
         "id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, sentence TEXT, description TEXT, cover TEXT, pages INTEGER, publisher TEXT, published TEXT, date TEXT)",
       null,
-      () => {
-        // Success Callback
-        console.log("LOOKUP - Created.");
-      },
-      () => {
-        // Error Callback
-        console.log("LOOKUP - Failed to create.");
+      // Success
+      (txObj, data) => {},
+      // Failure
+      (txObj, error) => {
+        console.warn(error);
       }
     );
   });
@@ -29,13 +27,11 @@ export function deleteTableLookup() {
     tx.executeSql(
       "DROP TABLE lookup",
       null,
-      () => {
-        // Success Callback
-        console.log("Sucessfully deleted 'lookup'.");
-      },
-      () => {
-        // Error Callback
-        console.log("Failed to delete 'lookup'.");
+      // Success
+      (txObj, data) => {},
+      // Failure
+      (txObj, error) => {
+        console.warn(error);
       }
     );
   });
@@ -60,14 +56,12 @@ export function insertLookup(book, callback) {
         book["published"],
         lookupDate,
       ],
+      // Success.
       (txObj, data) => {
-        // Success.
-        console.log("LOOKUP - Inserted.");
         callback(data.insertId);
       },
+      // Failure
       (txObj, error) => {
-        // Error
-        console.log("LOOKUP - Error inserting.");
         console.warn(error);
       }
     );
@@ -77,14 +71,13 @@ export function insertLookup(book, callback) {
 export function selectLookup() {
   db.transaction((tx) => {
     tx.executeSql(
-      "SELECT id, title FROM lookup",
+      "SELECT * FROM lookup",
       null,
-      (txObj, data) => {
-        console.log("Selected from lookup.");
-        console.log(data.rows._array);
-      },
-      () => {
-        console.log("Error selecting from lookup.");
+      // Success
+      (txObj, data) => {},
+      // Failure
+      (txObj, error) => {
+        console.warn(error);
       }
     );
   });
@@ -100,13 +93,11 @@ export function createRecommendationsByAuthor() {
       "CREATE TABLE IF NOT EXISTS recsByAuthor(" +
         "id INTEGER PRIMARY KEY AUTOINCREMENT, lookupId INTEGER, key TEXT, title TEXT, author TEXT, cover TEXT, published TEXT, description TEXT, favourited BOOLEAN, FOREIGN KEY(lookupId) REFERENCES lookup(id))",
       null,
-      () => {
-        // Success Callback
-        console.log("AUTHOR RECS - Created.");
-      },
-      () => {
-        // Error Callback
-        console.log("AUTHOR RECS - Failed to create.");
+      // Success
+      (txObj, data) => {},
+      // Failure
+      (txObj, error) => {
+        console.warn(error);
       }
     );
   });
@@ -117,13 +108,11 @@ export function deleteTableRecommendationsByAuthor() {
     tx.executeSql(
       "DROP TABLE recsByAuthor",
       null,
-      () => {
-        // Success Callback
-        console.log("AUTHOR RECS - Deleted.");
-      },
-      () => {
-        // Error Callback
-        console.log("AUTHOR RECS - Failed to delete.");
+      // Success
+      (txObj, data) => {},
+      // Failure
+      (txObj, error) => {
+        console.warn(error);
       }
     );
   });
@@ -134,14 +123,13 @@ export function deleteRecommendationByAuthor(id, onBookDeleted) {
     tx.executeSql(
       "DELETE FROM recsByAuthor WHERE id = ?",
       [id],
+      // Success
       (txObj, data) => {
-        // Success Callback
-        console.log("AUTHOR RECS - Record deleted.");
         onBookDeleted();
       },
-      (txObj, data) => {
-        // Error Callback
-        console.log("AUTHOR RECS - Failed to delete record.");
+      // Failure
+      (txObj, error) => {
+        console.warn(error);
       }
     );
   });
@@ -161,11 +149,10 @@ export function insertRecommendationByAuthor(book, lookupId) {
         book["description"],
         book["favourited"],
       ],
-      (txObj, data) => {
-        console.log("AUTHOR RECS - Inserted.");
-      },
+      // Success
+      (txObj, data) => {},
+      // Failure
       (txObj, error) => {
-        console.log("AUTHOR RECS - Failed to insert.");
         console.warn(error);
       }
     );
@@ -177,12 +164,14 @@ export function selectRecommendationsByAuthor(onRecommendationsRetrieved) {
     tx.executeSql(
       "SELECT * FROM recsByAuthor",
       null,
+      // Success
       (txObj, data) => {
         console.log("AUTHOR RECS - Selected.");
         onRecommendationsRetrieved(data.rows._array);
       },
-      () => {
-        console.log("AUTHOR RECS - Failed to select.");
+      // Failure
+      (txObj, error) => {
+        console.warn(error);
       }
     );
   });
@@ -193,14 +182,13 @@ export function selectFavouritedRecommendationsByAuthor(callback) {
     tx.executeSql(
       "SELECT * FROM recsByAuthor WHERE favourited=1",
       null,
+      // Success
       (txObj, data) => {
-        // Success Callback
-        console.log("AUTHOR RECS (FAVOURITED ONLY) - Selected.");
         callback(data.rows._array);
       },
+      // Failure
       (txObj, error) => {
-        // Error Callback
-        console.log("AUTHOR RECS (FAVOURITED) - Failed to select.");
+        console.warn(error);
       }
     );
   });
@@ -218,11 +206,10 @@ export function createRecommendationsBySubject() {
       "CREATE TABLE IF NOT EXISTS recsBySubject(id INTEGER PRIMARY KEY AUTOINCREMENT," +
         " lookupId INTEGER, key TEXT, title TEXT, author TEXT, cover TEXT, lookupSubject TEXT, subjects TEXT, favourited BOOLEAN, FOREIGN KEY(lookupId) REFERENCES lookup(id))",
       null,
-      (txObj, data) => {
-        console.log("SUBJECTS - Created.");
-      },
+      // Success
+      (txObj, data) => {},
+      // Failure
       (txObj, error) => {
-        console.log("SUBJECTS - Could not create.");
         console.warn(error);
       }
     );
@@ -234,11 +221,11 @@ export function deleteTableRecommendationsBySubject() {
     tx.executeSql(
       "DROP TABLE recsBySubject",
       null,
-      (txObj, data) => {
-        console.log("SUBJECTS - Deleted.");
-      },
-      () => {
-        console.log("SUBJECTS - Couldn't delete.");
+      // Success
+      (txObj, data) => {},
+      // Failure
+      (txObj, error) => {
+        console.warn(error);
       }
     );
   });
@@ -249,14 +236,12 @@ export function deleteRecommendationBySubject(id, onBookDeleted) {
     tx.executeSql(
       "DELETE FROM recsBySubject WHERE id=?",
       [id],
+      // Success
       (txObj, data) => {
-        // Success
-        console.log("SUBJECT DELETED - Success.");
         onBookDeleted();
       },
+      // Failure
       (txObj, error) => {
-        // Error
-        console.log("SUBJECT DELETED - Failed.");
         console.warn(error);
       }
     );
@@ -278,13 +263,10 @@ export function insertRecommendationBySubject(book, lookupId) {
         tags,
         book["favourited"],
       ],
-      (txObj, data) => {
-        // Success
-        console.log("SUBJECT - Inserted.");
-      },
+      // Success
+      (txObj, data) => {},
+      // Failure
       (txObj, error) => {
-        // Error
-        console.log("SUBJECT - Failed to insert.");
         console.warn(error);
       }
     );
@@ -296,13 +278,10 @@ export function selectRecommendationsBySubject() {
     tx.executeSql(
       "SELECT * FROM recsBySubject",
       null,
-      (txObj, data) => {
-        // Success
-        console.log("SUBJECTS - Selected.");
-        console.log(data.rows._array);
-      },
+      // Success
+      (txObj, data) => {},
+      // Failure
       (txObj, error) => {
-        console.log("SUBJECTS - Failed to select.");
         console.warn(error);
       }
     );
@@ -314,14 +293,12 @@ export function selectFavouritedRecommendationsBySubject(callback) {
     tx.executeSql(
       "SELECT * FROM recsBySubject WHERE favourited=1",
       null,
+      // Success
       (txObj, data) => {
-        // Success
-        console.log("SUBJECTS (Favourited) - Selected.");
         callback(data.rows._array);
       },
+      // Failure
       (txObj, error) => {
-        // Error
-        console.log("SUBJECTS (Favourited) - Failed to select.");
         console.warn(error);
       }
     );

@@ -23,9 +23,6 @@ const ModalWishlistAuthorRec = ({
       animationType="slide"
       transparent={true}
       visible={modalVisible}
-      onShow={() => {
-        console.log("Showing");
-      }}
       onRequestClose={() => {
         setModalVisible(!modalVisible);
       }}

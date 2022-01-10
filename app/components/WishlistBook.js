@@ -23,7 +23,7 @@ const WishlistBook = ({ book, onUnfavouriteBook }) => {
 
   let cover =
     book["cover"] !== "" ? (
-      <Image source={{ uri: book["cover"], width: 120, height: 200 }} />
+      <Image source={{ uri: book["cover"], width: 130, height: 200 }} />
     ) : (
       <Image
         source={require("../assets/default-book.bmp")}
@@ -43,7 +43,7 @@ const WishlistBook = ({ book, onUnfavouriteBook }) => {
             <Text style={wishlistAuthorBooks.title}>{book["title"]}</Text>
             <Text style={wishlistAuthorBooks.author}>{book["author"]}</Text>
           </View>
-          <View>{cover}</View>
+          <View styles={wishlistAuthorBooks.coverView}>{cover}</View>
         </View>
       </TouchableHighlight>
 

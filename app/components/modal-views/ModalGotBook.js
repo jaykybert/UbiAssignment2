@@ -2,7 +2,7 @@
 import React from "react";
 import { ActivityIndicator, Image, Text, View } from "react-native";
 // Styles
-import { authorWorks, modal } from "../../styles";
+import { authorWorks, colors, modal } from "../../styles";
 
 /**
  * TODO
@@ -32,10 +32,10 @@ const ModalGotBook = ({ book }) => {
           source={require("../../assets/complete.png")}
           style={modal.image}
         />
-        <Text>{book["title"]}</Text>
+        <Text style={authorWorks.title}>{book["title"]}</Text>
         {cover}
-        <Text>Getting author...</Text>
-        <ActivityIndicator size="large" color="black" />
+        <Text style={authorWorks.author}>Getting author...</Text>
+        <ActivityIndicator size="large" color={colors.darkGreen} />
       </View>
     </View>
   );

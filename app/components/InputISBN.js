@@ -15,6 +15,7 @@ const InputISBN = ({ recommendations, setRecommendations }) => {
             placeholder="ISBN 10/13"
             onChangeText={(text) => setText(text)}
             style={input.inputText}
+            keyboardType="numeric"
           />
         </View>
         <View style={input.buttonView}>

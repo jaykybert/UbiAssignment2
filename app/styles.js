@@ -8,13 +8,14 @@ export const colors = {
   black: "#000000",
   white: "#ffffff",
   offWhite: "#fbfbfc",
+  tan: "#ebefe1",
 };
 
 // App
 export const app = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.black,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -28,11 +29,10 @@ export const input = StyleSheet.create({
     borderColor: colors.black,
     borderStyle: "solid",
     flexDirection: "row",
-    margin: 3,
-    paddingVertical: 0,
+    marginHorizontal: 5,
   },
   inputView: {
-    paddingLeft: 10,
+    paddingLeft: 5,
     flex: 1,
   },
   inputText: {
@@ -45,11 +45,18 @@ export const input = StyleSheet.create({
   },
 });
 
-// Container
+// Screen Container
 export const container = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
+  },
+});
+
+// Lookup
+export const controller = StyleSheet.create({
+  container: {
+    backgroundColor: colors.offWhite,
   },
 });
 
@@ -76,22 +83,26 @@ export const modal = StyleSheet.create({
 
 export const authorWorks = StyleSheet.create({
   container: {
+    backgroundColor: colors.offWhite,
     justifyContent: "center",
     alignItems: "center",
     borderTopColor: colors.darkGreen,
-    borderTopWidth: 4,
-    marginBottom: 5,
-    paddingHorizontal: 5,
+    borderTopWidth: 2,
+    borderBottomColor: colors.darkGreen,
+    borderBottomWidth: 2,
+    marginBottom: 10,
+    padding: 5,
     flex: 1,
   },
   title: {
     color: "#262727",
     fontSize: 18,
     fontWeight: "bold",
+    textAlign: "center",
   },
   cover: {
     height: 200,
-    width: 140,
+    width: 130,
   },
   author: {
     fontStyle: "italic",
@@ -121,12 +132,12 @@ export const wishlistAuthorBooks = StyleSheet.create({
   item: {
     marginTop: 10,
     paddingBottom: 10,
-    backgroundColor: "#edf3f0",
+    backgroundColor: colors.offWhite,
     alignItems: "center",
-    borderTopColor: colors.black,
-    borderTopWidth: 1,
-    borderBottomColor: colors.black,
-    borderBottomWidth: 1,
+    borderTopColor: colors.darkGreen,
+    borderTopWidth: 2,
+    borderBottomColor: colors.darkGreen,
+    borderBottomWidth: 2,
   },
   headingView: {
     marginBottom: 10,
@@ -135,11 +146,9 @@ export const wishlistAuthorBooks = StyleSheet.create({
     borderColor: colors.darkGreen,
     borderWidth: 2,
     elevation: 5,
-    backgroundColor: "red",
   },
   buttonView: {
     marginVertical: 10,
-    backgroundColor: "red",
     width: 150,
     borderColor: colors.black,
     borderRadius: 5,
@@ -156,7 +165,7 @@ export const wishlistAuthorBooks = StyleSheet.create({
   },
   cover: {
     height: 200,
-    width: 140,
+    width: 130,
   },
 
   title: {
@@ -183,5 +192,27 @@ export const emptyWishlist = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
+  },
+});
+
+// Camera
+export const scanner = StyleSheet.create({
+  container: {
+    margin: 5,
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  permissionText: {
+    textAlign: "center",
+    fontSize: 16,
+  },
+  image: {
+    width: 100,
+    height: 100,
+  },
+  button: {
+    marginTop: 10,
+    paddingHorizontal: 5,
   },
 });

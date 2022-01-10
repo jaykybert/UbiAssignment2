@@ -7,7 +7,9 @@ import React, { useState } from "react";
 import { Button, FlatList, View } from "react-native";
 // Components
 import RecommendedBook from "./RecommendedBook";
-// Utilities
+// Styles
+import { colors } from "../styles";
+// Database
 import * as db from "../database";
 
 /**
@@ -52,20 +54,8 @@ const RecommendedBooks = ({ recBooks, lookupBook, updateState }) => {
     db.insertLookup(lookupBook, onInsertedLookup);
   };
 
-  const WipeDatabase = () => {
-    db.deleteLookup();
-    db.deleteRecommendationsByAuthor();
-    db.deleteRecommendationsBySubject();
-  };
-
-  const CreateDatabase = () => {
-    db.createLookup();
-    db.createRecommendationsByAuthor();
-    db.createRecommendationsBySubject();
-  };
-
   return (
-    <View style={{ height: 575 }}>
+    <View style={{ height: 575, paddingBottom: 15, alignItems: "center" }}>
       <FlatList
         data={recBooks}
         keyExtractor={(item) => item.key}
@@ -74,9 +64,10 @@ const RecommendedBooks = ({ recBooks, lookupBook, updateState }) => {
         )}
       />
 
-      <View style={{ marginTop: 10 }}>
+      <View style={{ marginTop: 10, width: 100 }}>
         <Button
           title="Save to Wishlist"
+          color={colors.darkGreen}
           onPress={() => {
             console.log("saving...");
             SaveToDatabase();

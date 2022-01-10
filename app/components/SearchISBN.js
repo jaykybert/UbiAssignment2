@@ -1,23 +1,17 @@
-// React & Navigation
+// React
 import React, { useState } from "react";
-import {
-  AlertIOS,
-  Button,
-  Modal,
-  Platform,
-  ToastAndroid,
-  View,
-} from "react-native";
+import { AlertIOS, Modal, Platform, ToastAndroid, View } from "react-native";
 // Components
-import ModalStarted from "../components/modal-views/ModalStarted.js";
-import ModalGotBook from "../components/modal-views/ModalGotBook";
-import ModalGotSubjects from "../components/modal-views/ModalGotSubjects";
-import ModalGotAuthorWorks from "../components/modal-views/ModalGotAuthorWorks";
-import ModalGotRecommendedBooks from "../components/modal-views/ModalGotRecommendedBooks";
-import ModalError from "../components/modal-views/ModalError";
-import InputISBN from "../components/InputISBN.js";
+import ModalStarted from "./modal-views/ModalStarted.js";
+import ModalGotBook from "./modal-views/ModalGotBook";
+import ModalGotSubjects from "./modal-views/ModalGotSubjects";
+import ModalGotAuthorWorks from "./modal-views/ModalGotAuthorWorks";
+import ModalGotRecommendedBooks from "./modal-views/ModalGotRecommendedBooks";
+import ModalError from "./modal-views/ModalError";
+import InputISBN from "./InputISBN.js";
+import ScanISBN from "./ScanISBN";
 // Styles
-import { container } from "../styles.js";
+import { controller, container } from "../styles.js";
 // API Calls
 import {
   GetAuthorByKey,
@@ -29,13 +23,13 @@ import {
 
 /**
  * TODO
- * @returns {Camera}
+ * @returns {SearchISBN}
  */
-const Camera = () => {
+const SearchISBN = ({ isbn }) => {
   const [modalVisible, setModalVisible] = useState(true);
   const [recommendations, setRecommendations] = useState({
     state: "NOT_STARTED",
-    isbn: "",
+    isbn: isbn,
     authorWorks: [],
     recommendedWorks: [],
   });
@@ -49,12 +43,7 @@ const Camera = () => {
     // Histories 9780140449082
     // Zen 9780099786405
     // Tender 9780241341483
-    let book;
-    if (recommendations["isbn"] === "") {
-      book = await GetBookByISBN("9780099786405");
-    } else {
-      book = await GetBookByISBN(recommendations["isbn"]);
-    }
+    let book = await GetBookByISBN(recommendations["isbn"]);
 
     if (book.hasOwnProperty("error")) {
       setRecommendations({ state: "ERROR" });
@@ -130,16 +119,10 @@ const Camera = () => {
           recommendations={recommendations}
           setRecommendations={setRecommendations}
         />
-
-        <Button
-          title="Lookup"
-          accessibilityLabel="Lookup information."
-          onPress={() => {
-            let recCopy = JSON.parse(JSON.stringify(recommendations));
-            recCopy["state"] = "STARTED";
-            setRecommendations(recCopy);
-          }}
-        ></Button>
+        <ScanISBN
+          recommendations={recommendations}
+          setRecommendations={setRecommendations}
+        />
       </View>
     );
   }
@@ -147,23 +130,22 @@ const Camera = () => {
   else if (recommendations["state"] === "STARTED") {
     LookupBook();
     return (
-      <View style={container.container}>
+      <View style={controller.container}>
         <Modal
           animationType="none"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            setModalVisible(!modalVisible);
+            setRecommendations({
+              state: "NOT_STARTED",
+              isbn: "",
+              authorWorks: [],
+              recommendedWorks: [],
+            });
           }}
         >
-          <ModalStarted />
+          <ModalStarted isbn={recommendations["isbn"]} />
         </Modal>
-
-        <Button
-          title="Lookup"
-          accessibilityLabel="Lookup information."
-          onPress={() => setModalVisible(true)}
-        ></Button>
       </View>
     );
   }
@@ -173,43 +155,43 @@ const Camera = () => {
     LookupAuthor();
 
     return (
-      <View style={container.container}>
+      <View style={controller.container}>
         <Modal
           animationType="none"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            setModalVisible(!modalVisible);
+            setRecommendations({
+              state: "NOT_STARTED",
+              isbn: "",
+              authorWorks: [],
+              recommendedWorks: [],
+            });
           }}
         >
           <ModalGotBook book={recommendations["book"]} />
         </Modal>
-        <Button
-          title="Lookup"
-          accessibilityLabel="Lookup information."
-          onPress={() => setModalVisible(true)}
-        ></Button>
       </View>
     );
   } else if (recommendations["state"] === "GOT_AUTHOR") {
     LookupSubjects();
     return (
-      <View style={container.container}>
+      <View style={controller.container}>
         <Modal
           animationType="none"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            setModalVisible(!modalVisible);
+            setRecommendations({
+              state: "NOT_STARTED",
+              isbn: "",
+              authorWorks: [],
+              recommendedWorks: [],
+            });
           }}
         >
           <ModalGotSubjects book={recommendations["book"]} />
         </Modal>
-        <Button
-          title="Lookup"
-          accessibilityLabel="Lookup information."
-          onPress={() => setModalVisible(true)}
-        ></Button>
       </View>
     );
   }
@@ -219,22 +201,22 @@ const Camera = () => {
     LookupAuthorWorks();
 
     return (
-      <View style={container.container}>
+      <View style={controller.container}>
         <Modal
           animationType="none"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            setModalVisible(!modalVisible);
+            setRecommendations({
+              state: "NOT_STARTED",
+              isbn: "",
+              authorWorks: [],
+              recommendedWorks: [],
+            });
           }}
         >
           <ModalGotSubjects book={recommendations["book"]} />
         </Modal>
-        <Button
-          title="Lookup"
-          accessibilityLabel="Lookup information."
-          onPress={() => setModalVisible(true)}
-        ></Button>
       </View>
     );
   }
@@ -244,22 +226,22 @@ const Camera = () => {
     LookupRecommendedBooks(subjectData);
 
     return (
-      <View style={container.container}>
+      <View style={controller.container}>
         <Modal
           animationType="none"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            setModalVisible(!modalVisible);
+            setRecommendations({
+              state: "NOT_STARTED",
+              isbn: "",
+              authorWorks: [],
+              recommendedWorks: [],
+            });
           }}
         >
           <ModalGotAuthorWorks book={recommendations["book"]} />
         </Modal>
-        <Button
-          title="Lookup"
-          accessibilityLabel="Lookup information."
-          onPress={() => setModalVisible(true)}
-        ></Button>
       </View>
     );
   }
@@ -269,19 +251,35 @@ const Camera = () => {
     let lookupBook = recommendations["book"];
     lookupBook["description"] = recommendations["subjects"]["description"];
 
-    // TODO: Remove duplicate recommendations.
     let recBooks = recommendations["authorWorks"].concat(
       recommendations["recommendedWorks"]
     );
 
+    // Code to remove duplicates found here:
+    // https://stackoverflow.com/questions/32634736/javascript-object-array-removing-objects-with-duplicate-properties
+    recBooks = recBooks.reduce(function (prev, current) {
+      if (
+        !prev.some(function (element) {
+          return element.key === current.key;
+        })
+      )
+        prev.push(current);
+      return prev;
+    }, []);
+
     return (
-      <View style={container.container}>
+      <View style={controller.container}>
         <Modal
           animationType="none"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            setModalVisible(!modalVisible);
+            setRecommendations({
+              state: "NOT_STARTED",
+              isbn: "",
+              authorWorks: [],
+              recommendedWorks: [],
+            });
           }}
         >
           <ModalGotRecommendedBooks
@@ -290,11 +288,6 @@ const Camera = () => {
             updateState={setRecommendations}
           />
         </Modal>
-        <Button
-          title="Lookup"
-          accessibilityLabel="Lookup information."
-          onPress={() => setModalVisible(true)}
-        ></Button>
       </View>
     );
   }
@@ -320,25 +313,25 @@ const Camera = () => {
   // Return Error Modal
   else if (recommendations["state"] === "ERROR") {
     return (
-      <View style={container.container}>
+      <View style={controller.container}>
         <Modal
           animationType="none"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            setModalVisible(!modalVisible);
+            setRecommendations({
+              state: "NOT_STARTED",
+              isbn: "",
+              authorWorks: [],
+              recommendedWorks: [],
+            });
           }}
         >
           <ModalError />
         </Modal>
-        <Button
-          title="Lookup"
-          accessibilityLabel="Lookup information."
-          onPress={() => setModalVisible(true)}
-        ></Button>
       </View>
     );
   }
 };
 
-export default Camera;
+export default SearchISBN;

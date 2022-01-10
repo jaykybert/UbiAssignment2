@@ -4,7 +4,7 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 // Components
 import BooksTopTabs from "./BooksTopTabs.js";
-import Camera from "../screens/Camera.js";
+import LookupScreen from "../screens/LookupScreen.js";
 import EmptyComponent from "../shared/EmptyComponent.js";
 
 const Root = createMaterialBottomTabNavigator();
@@ -36,7 +36,7 @@ const BottomTabs = () => {
 
       <Root.Screen
         name="Camera"
-        component={Camera}
+        component={LookupScreen}
         options={{
           tabBarColor: "#256f5a",
           tabBarLabel: "Scan",

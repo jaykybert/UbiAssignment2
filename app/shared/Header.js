@@ -14,7 +14,7 @@ const Header = () => {
       </View>
 
       <View style={styles.textView}>
-        <Text style={styles.text}>Book Buddy</Text>
+        <Text style={styles.text}>Next Read</Text>
       </View>
     </View>
   );
