@@ -1,3 +1,9 @@
+/**
+ * @file EmptyComponent.js
+ *
+ * Contains EmptyComponent.
+ */
+
 // React
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -8,14 +14,14 @@ import { StyleSheet, Text, View } from "react-native";
  */
 const EmptyComponent = () => {
   return (
-    <View style={styles.Empty}>
+    <View style={styles.empty}>
       <Text>...</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  Empty: {
+  empty: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",

@@ -1,9 +1,23 @@
+/**
+ * @file InputISBN.js
+ *
+ * Contains the InputISBN component.
+ */
+
 // React
 import React, { useState } from "react";
 import { Button, TextInput, View } from "react-native";
 // Styles
 import { colors, input } from "../styles";
 
+/**
+ * @function InputISBN
+ * @param {object} recommendations - state variable from SearchISBN component.
+ * @param {function} setRecommendations - update state function from SearchISBN component.
+ *
+ * Provides alternative method of entering ISBN. Simple numeric keyboard and button.
+ * On button press, update state inside SearchISBN.
+ */
 const InputISBN = ({ recommendations, setRecommendations }) => {
   const [text, setText] = useState("");
   return (

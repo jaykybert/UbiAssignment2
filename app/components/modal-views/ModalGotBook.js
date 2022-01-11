@@ -1,3 +1,9 @@
+/**
+ * @file ModalGotBook.js
+ *
+ * Contains the ModalGotBook component.
+ */
+
 // React
 import React from "react";
 import { ActivityIndicator, Image, Text, View } from "react-native";
@@ -5,25 +11,23 @@ import { ActivityIndicator, Image, Text, View } from "react-native";
 import { authorWorks, colors, modal } from "../../styles";
 
 /**
- * TODO
- * @param {*} param0
- * @returns
+ * @function ModalGotBook
+ * @param {object} book - information on the lookup book.
+ *
+ * The modal contents displayed when state is GOT_BOOK.
  */
 const ModalGotBook = ({ book }) => {
-  let cover;
-  // No cover url.
-  if (book["cover"] === "") {
-    cover = (
+  let cover =
+    book["cover"] !== "" ? (
+      (cover = (
+        <Image source={{ uri: book["cover"], width: 150, height: 220 }} />
+      ))
+    ) : (
       <Image
         source={require("../../assets/default-book.bmp")}
         style={authorWorks.cover}
       ></Image>
     );
-  }
-  // Cover url.
-  else {
-    cover = <Image source={{ uri: book["cover"], width: 150, height: 220 }} />;
-  }
 
   return (
     <View style={modal.centeredView}>

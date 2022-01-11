@@ -1,7 +1,7 @@
 /**
  * @file ModalWishlistSubjectRec.js
  *
- * TODO
+ * Contains the ModalWishlistSubjectRec component.
  */
 
 // React
@@ -11,6 +11,16 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 // Styles
 import { modal, wishlistAuthorBooks, colors } from "../../styles";
 
+/**
+ * @function ModalWishlistSubjectRec
+ * @param {object} book - information on the book to be displayed.
+ * @param {JSX} coverImage - the cover of the book.
+ * @param {boolean} modalVisible - state variable from WishlistBook component.
+ * @param {function} setModalVisible - update state function from WishlistBook component.
+ * @param {function} onUnfavouriteBook - function called when book is unfavourited, from WishlistBooks component.
+ *
+ * Display the wishlisted book (from recsBySubject) inside of a modal.
+ */
 const ModalWishlistSubjectRec = ({
   book,
   coverImage,

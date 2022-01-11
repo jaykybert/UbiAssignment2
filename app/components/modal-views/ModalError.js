@@ -1,3 +1,9 @@
+/**
+ * @file ModalError.js
+ *
+ * Contains the ModalError component.
+ */
+
 // React
 import React from "react";
 import { Image, Text, View } from "react-native";
@@ -5,8 +11,9 @@ import { Image, Text, View } from "react-native";
 import { modal } from "../../styles";
 
 /**
- * TODO
- * @returns
+ * @function ModalError
+ *
+ * The modal contents displayed when state is ERROR.
  */
 const ModalError = () => {
   return (

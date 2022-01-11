@@ -1,3 +1,9 @@
+/**
+ * @file BooksTopTabs.js
+ *
+ * Contains the BooksTopTabs component.
+ */
+
 // React & Navigation
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -10,8 +16,11 @@ import { colors } from "../styles";
 const Tabs = createMaterialTopTabNavigator();
 
 /**
- * TODO
- * @returns
+ * @function BooksTopTabs
+ *
+ * Contains two separate components accessed via top tabs.
+ *    > LEFT: WishlistBooksScreen
+ *    > RIGHT: LookupHistoryScreen
  */
 const BooksTopTabs = () => {
   return (

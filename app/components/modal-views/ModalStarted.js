@@ -1,3 +1,9 @@
+/**
+ * @file ModalStarted.js
+ *
+ * Contains the ModalStarted component.
+ */
+
 // React
 import React from "react";
 import { ActivityIndicator, Text, View } from "react-native";
@@ -5,8 +11,10 @@ import { ActivityIndicator, Text, View } from "react-native";
 import { colors, modal } from "../../styles";
 
 /**
- * TODO
- * @returns
+ * @function ModalStarted
+ * @param {string} isbn - the ISBN to be searched.
+ *
+ * The modal contents displayed when state is STARTED.
  */
 const ModalStarted = ({ isbn }) => {
   return (

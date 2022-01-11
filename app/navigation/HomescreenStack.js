@@ -1,3 +1,9 @@
+/**
+ * @file HomescreenStack.js
+ *
+ * Contains the HomescreenStack component.
+ */
+
 // React & Navigation
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -7,9 +13,14 @@ import Header from "../shared/Header";
 
 const homeStack = createNativeStackNavigator();
 
+/**
+ * @function HomescreenStack
+ *
+ * Outer-most navigation component, with a custom header.
+ * Contains the BottomTabs component.
+ */
 const HomescreenStack = () => {
   return (
-    // TODO: Add custom header?
     <homeStack.Navigator
       screenOptions={{
         headerTitle: () => <Header />,

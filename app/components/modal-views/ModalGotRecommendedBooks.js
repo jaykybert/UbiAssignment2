@@ -1,3 +1,9 @@
+/**
+ * @file ModalGotRecommendedBooks.js
+ *
+ * Contains the ModalGotRecommendedBooks component.
+ */
+
 // React
 import React from "react";
 import { Image, View } from "react-native";
@@ -7,11 +13,18 @@ import RecommendedBooks from "../RecommendedBooks";
 import { modal } from "../../styles";
 
 /**
- * TODO
- * @param {*} param0
- * @returns
+ * @function ModalGotRecommendedBooks
+ * @param {array} recBooks - array of all recommended books (by author and subject).
+ * @param {object} lookupBook - information on the lookup book.
+ * @param {function} setRecommendations - update state function inside SearchISBN component.
+ *
+ * The modal contents displayed when state is GOT_RECOMMENDED_BOOKS.
  */
-const ModalGotRecommendedBooks = ({ recBooks, lookupBook, updateState }) => {
+const ModalGotRecommendedBooks = ({
+  recBooks,
+  lookupBook,
+  setRecommendations,
+}) => {
   return (
     <View style={modal.centeredView}>
       <View style={modal.modalView}>
@@ -23,7 +36,7 @@ const ModalGotRecommendedBooks = ({ recBooks, lookupBook, updateState }) => {
         <RecommendedBooks
           recBooks={recBooks}
           lookupBook={lookupBook}
-          updateState={updateState}
+          setRecommendations={setRecommendations}
         />
       </View>
     </View>

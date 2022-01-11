@@ -1,29 +1,50 @@
+/**
+ * @file SearchISBN.js
+ *
+ * Contains the SerachISBN component.
+ */
+
 // React
 import React, { useState } from "react";
 import { AlertIOS, Modal, Platform, ToastAndroid, View } from "react-native";
 // Components
-import ModalStarted from "./modal-views/ModalStarted.js";
-import ModalGotBook from "./modal-views/ModalGotBook";
-import ModalGotSubjects from "./modal-views/ModalGotSubjects";
-import ModalGotAuthorWorks from "./modal-views/ModalGotAuthorWorks";
-import ModalGotRecommendedBooks from "./modal-views/ModalGotRecommendedBooks";
-import ModalError from "./modal-views/ModalError";
-import InputISBN from "./InputISBN.js";
-import ScanISBN from "./ScanISBN";
+import ModalStarted from "../components/modal-views/ModalStarted.js";
+import ModalGotBook from "../components/modal-views/ModalGotBook";
+import ModalGotAuthor from "../components/modal-views/ModalGotAuthor";
+import ModalGotSubjects from "../components/modal-views/ModalGotSubjects";
+import ModalGotAuthorWorks from "../components/modal-views/ModalGotAuthorWorks";
+import ModalGotRecommendedBooks from "../components/modal-views/ModalGotRecommendedBooks";
+import ModalError from "../components/modal-views/ModalError";
+import InputISBN from "../components/InputISBN.js";
+import ScanISBN from "../components/ScanISBN";
 // Styles
 import { controller, container } from "../styles.js";
 // API Calls
 import {
-  GetAuthorByKey,
-  GetAuthorWorksByKey,
-  GetBookByISBN,
-  GetBooksBySubject,
-  GetSubjectsByKey,
+  getAuthorByKey,
+  getAuthorWorksByKey,
+  getBookByISBN,
+  getBooksBySubject,
+  getSubjectsByKey,
 } from "../scripts/bookApiCalls";
 
 /**
- * TODO
- * @returns {SearchISBN}
+ * @function SearchISBN
+ *
+ * Main logic component for searching for book recommendations.
+ * Always in one of the following states, which determines what function
+ * is called next, and what component is returned:
+ *    > NOT_STARTED
+ *    > STARTED
+ *    > GOT_BOOK
+ *    > GOT_AUTHOR
+ *    > GOT_SUBJECTS
+ *    > GOT_AUTHOR_WORKS
+ *    > GOT_RECOMMENDED_BOOKS
+ *    > ERROR
+ *
+ * Follows the above order linearly.
+ * When one API call returns, update the state along with the retrieved data.
  */
 const SearchISBN = ({ isbn }) => {
   const [modalVisible, setModalVisible] = useState(true);
@@ -34,21 +55,20 @@ const SearchISBN = ({ isbn }) => {
     recommendedWorks: [],
   });
   console.log(recommendations["state"]);
+
   /**
-   * TODO
+   * @function lookupBook
+   *
+   * Asynchronous function, called in STARTED state.
+   * Awaits API call, updates state to GOT_BOOK.
    */
-  const LookupBook = async () => {
-    // Book by ISBN
-    // Mr Fox 0140306765
-    // Histories 9780140449082
-    // Zen 9780099786405
-    // Tender 9780241341483
-    let book = await GetBookByISBN(recommendations["isbn"]);
+  const lookupBook = async () => {
+    let book = await getBookByISBN(recommendations["isbn"]);
 
     if (book.hasOwnProperty("error")) {
       setRecommendations({ state: "ERROR" });
     } else {
-      // Can't set recCopy = recommendations. Needs different reference, otherwise won't re-render.
+      // Note: Can't set recCopy = recommendations. Can't reference same obj, otherwise won't re-render.
       let recCopy = JSON.parse(JSON.stringify(recommendations));
       recCopy["book"] = book;
       recCopy["state"] = "GOT_BOOK";
@@ -56,8 +76,14 @@ const SearchISBN = ({ isbn }) => {
     }
   };
 
-  const LookupAuthor = async () => {
-    let author = await GetAuthorByKey(recommendations["book"]["authorKey"]);
+  /**
+   * @function lookupAuthor
+   *
+   * Asynchronous function, called in GOT_BOOK state.
+   * Awaits API call, updates state to GOT_AUTHOR.
+   */
+  const lookupAuthor = async () => {
+    let author = await getAuthorByKey(recommendations["book"]["authorKey"]);
 
     let recCopy = JSON.parse(JSON.stringify(recommendations));
     recCopy["book"]["author"] = author["name"];
@@ -67,10 +93,13 @@ const SearchISBN = ({ isbn }) => {
   };
 
   /**
-   * TODO
+   * @function lookupSubjects
+   *
+   * Asynchronous function, called in GOT_AUTHOR state.
+   * Awaits API call, updates state to GOT_SUBJECTS.
    */
-  const LookupSubjects = async () => {
-    let subjects = await GetSubjectsByKey(recommendations["book"]["workKey"]);
+  const lookupSubjects = async () => {
+    let subjects = await getSubjectsByKey(recommendations["book"]["workKey"]);
 
     let recCopy = JSON.parse(JSON.stringify(recommendations));
     recCopy["subjects"] = subjects;
@@ -80,10 +109,13 @@ const SearchISBN = ({ isbn }) => {
   };
 
   /**
-   * TODO
+   * @function lookupAuthorWorks
+   *
+   * Asynchronous function, called in GOT_SUBJECTS state.
+   * Awaits API call, updates state to GOT_AUTHOR_WORKS.
    */
-  const LookupAuthorWorks = async () => {
-    let works = await GetAuthorWorksByKey(recommendations["book"]["authorKey"]);
+  const lookupAuthorWorks = async () => {
+    let works = await getAuthorWorksByKey(recommendations["book"]["authorKey"]);
 
     // Add Author name to each work.
     for (let i = 0; i < works.length; i++) {
@@ -98,11 +130,15 @@ const SearchISBN = ({ isbn }) => {
   };
 
   /**
-   * TODO
-   * @param {*} subjects
+   * @function lookupRecommendedBooks
+   *
+   * Asynchronous function, called in GOT_AUTHOR_WORKS state.
+   * Awaits API call, updates state to GOT_RECOMMENDED_BOOKS.
    */
-  const LookupRecommendedBooks = async (subjects) => {
-    let books = await GetBooksBySubject(subjects);
+  const lookupRecommendedBooks = async () => {
+    let books = await getBooksBySubject(
+      recommendations["subjects"]["subjects"]
+    );
 
     let recCopy = JSON.parse(JSON.stringify(recommendations));
     recCopy["state"] = "GOT_RECOMMENDED_BOOKS";
@@ -126,9 +162,10 @@ const SearchISBN = ({ isbn }) => {
       </View>
     );
   }
+
   // Return Started Modal
   else if (recommendations["state"] === "STARTED") {
-    LookupBook();
+    lookupBook();
     return (
       <View style={controller.container}>
         <Modal
@@ -152,8 +189,7 @@ const SearchISBN = ({ isbn }) => {
 
   // Return Got Book Modal
   else if (recommendations["state"] === "GOT_BOOK") {
-    LookupAuthor();
-
+    lookupAuthor();
     return (
       <View style={controller.container}>
         <Modal
@@ -173,8 +209,11 @@ const SearchISBN = ({ isbn }) => {
         </Modal>
       </View>
     );
-  } else if (recommendations["state"] === "GOT_AUTHOR") {
-    LookupSubjects();
+  }
+
+  // Return Got Author Modal
+  else if (recommendations["state"] === "GOT_AUTHOR") {
+    lookupSubjects();
     return (
       <View style={controller.container}>
         <Modal
@@ -190,7 +229,7 @@ const SearchISBN = ({ isbn }) => {
             });
           }}
         >
-          <ModalGotSubjects book={recommendations["book"]} />
+          <ModalGotAuthor book={recommendations["book"]} />
         </Modal>
       </View>
     );
@@ -198,8 +237,7 @@ const SearchISBN = ({ isbn }) => {
 
   // Return Got Subjects Modal
   else if (recommendations["state"] === "GOT_SUBJECTS") {
-    LookupAuthorWorks();
-
+    lookupAuthorWorks();
     return (
       <View style={controller.container}>
         <Modal
@@ -223,8 +261,7 @@ const SearchISBN = ({ isbn }) => {
 
   // Return Got Author Works Modal
   else if (recommendations["state"] === "GOT_AUTHOR_WORKS") {
-    LookupRecommendedBooks(subjectData);
-
+    lookupRecommendedBooks();
     return (
       <View style={controller.container}>
         <Modal
@@ -285,23 +322,20 @@ const SearchISBN = ({ isbn }) => {
           <ModalGotRecommendedBooks
             recBooks={recBooks}
             lookupBook={lookupBook}
-            updateState={setRecommendations}
+            setRecommendations={setRecommendations}
           />
         </Modal>
       </View>
     );
   }
 
-  // Complete Modal
+  // Lookup Complete - reset state.
   else if (recommendations["state"] === "LOOKUP_COMPLETE") {
     if (Platform.OS === "android") {
       ToastAndroid.show("Saved Wishlist!", ToastAndroid.SHORT);
     } else {
       AlertIOS.alert("Saved Wishlist!");
     }
-
-    // Default States
-    //setModalVisible(true);
     setRecommendations({
       state: "NOT_STARTED",
       isbn: "",

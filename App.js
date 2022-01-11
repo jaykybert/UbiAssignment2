@@ -1,3 +1,9 @@
+/**
+ * @file App.js
+ *
+ * Contains the App component.
+ */
+
 // React & Navigation
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
@@ -5,12 +11,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import HomescreenStack from "./app/navigation/HomescreenStack";
 // Styles
 import { app } from "./app/styles";
-// Utilities
+// Database
 import * as db from "./app/database";
 
 /**
- * TODO
- * @returns
+ * @function App
+ *
+ * Entry point of application.
+ * Contains HomescreenStack.
  */
 export default function App() {
   db.createLookup();

@@ -1,3 +1,9 @@
+/**
+ * @file ScanISBN.js
+ *
+ * Contains the ScanISBN component.
+ */
+
 // React
 import React, { useState, useEffect } from "react";
 import {
@@ -13,11 +19,24 @@ import { Camera } from "expo-camera";
 // Styles
 import { scanner, colors } from "../styles";
 
+/**
+ * @function ScanISBN
+ * @param {object} recommendations - state variable from SearchISBN component.
+ * @param {function} setRecommendations - update state function from SearchISBN component.
+ *
+ * Main method of getting ISBN. Uses camera to scan barcode, then updates SearchISBN state.
+ */
 const ScanISBN = ({ recommendations, setRecommendations }) => {
   const [permission, setPermission] = useState(null);
 
   const isFocused = useIsFocused();
 
+  /**
+   * @function getCameraPermission
+   *
+   * Asynchronous function, await camera permission.
+   * Update state accordingly.
+   */
   async function getCameraPermission() {
     const statusObj = await Camera.requestCameraPermissionsAsync();
     setPermission(statusObj["status"] === "granted");
@@ -41,7 +60,7 @@ const ScanISBN = ({ recommendations, setRecommendations }) => {
       </View>
     );
   }
-  // Rejected
+  // Permission Rejected
   else if (permission === false) {
     return (
       <View style={scanner.container}>
@@ -61,7 +80,7 @@ const ScanISBN = ({ recommendations, setRecommendations }) => {
       </View>
     );
   }
-  // Granted
+  // Permission Granted
   else {
     return (
       <View style={scanner.container}>

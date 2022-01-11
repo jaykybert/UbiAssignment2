@@ -1,8 +1,21 @@
 /**
- * TODO
- * @param {*} isbn
+ * @file bookApiCalls.js
+ *
+ * Contains functions that use the Open Library API to lookup books, authors,
+ * and subjects for book recommendations.
+ *
+ * Note: the API itself is quite messy, with lots of repetition and different structures
+ * returned from book-to-book.
  */
-export async function GetBookByISBN(isbn) {
+
+/**
+ * @function getBookByISBN
+ * @param {string} ISBN - the ISBN to lookup.
+ * @returns {object} bookData - selected data from the API call.
+ *
+ * @example endpoint: https://openlibrary.org/isbn/0140306765.json
+ */
+export async function getBookByISBN(isbn) {
   try {
     let response = await fetch(`https://openlibrary.org/isbn/${isbn}.json`);
     let data = await response.json();
@@ -27,11 +40,13 @@ export async function GetBookByISBN(isbn) {
 }
 
 /**
- * TODO
- * @param {*} authorKey
- * @returns
+ * @function getAuthorByKey
+ * @param {string} authorKey - the unique author key.
+ * @returns {object} data - all data from the API call.
+ *
+ * @example endpoint: https://openlibrary.org/authors/OL34184A.json
  */
-export async function GetAuthorByKey(authorKey) {
+export async function getAuthorByKey(authorKey) {
   try {
     let response = await fetch(`https://openlibrary.org${authorKey}.json`);
     let data = await response.json();
@@ -44,11 +59,44 @@ export async function GetAuthorByKey(authorKey) {
 }
 
 /**
- * TODO
- * @param {*} authorId
- * @returns
+ * @function getSubjectsByKey
+ * @param {string} workKey - the unique work key for the lookup book.
+ * @returns {object} subjectData - selected data from the API call.
+ *
+ * @example endpoint: https://openlibrary.org/works/OL45883W.json
  */
-export async function GetAuthorWorksByKey(authorKey) {
+export async function getSubjectsByKey(workKey) {
+  try {
+    let response = await fetch(`https://openlibrary.org${workKey}.json`);
+    let data = await response.json();
+
+    subjectData = {
+      description: data["description"],
+      subjects: [],
+    };
+
+    // Get first two subjects.
+    for (let i = 0; i < data["subjects"].length; i++) {
+      subjectData["subjects"].push(data["subjects"][i].toLowerCase());
+      if (i === 2) {
+        break;
+      }
+    }
+    return subjectData;
+  } catch (e) {
+    console.warn(e);
+    return {};
+  }
+}
+
+/**
+ * @function getAuthorWorksByKey
+ * @param {string} authorKey - the unique author key.
+ * @returns {object} authorWorks - selected data from the API call.
+ *
+ * @example endpoint: https://openlibrary.org/authors/OL34184A/works.json
+ */
+export async function getAuthorWorksByKey(authorKey) {
   try {
     let response = await fetch(
       `https://openlibrary.org${authorKey}/works.json?limit=20`
@@ -80,7 +128,7 @@ export async function GetAuthorWorksByKey(authorKey) {
         work["published"] = "";
       }
 
-      // Description
+      // Description (structure varies book-to-book)
       if (data["entries"][i].hasOwnProperty("description")) {
         // Returned as a string.
         if (typeof data["entries"][i]["description"] === "string") {
@@ -110,47 +158,23 @@ export async function GetAuthorWorksByKey(authorKey) {
 }
 
 /**
- * TODO
- * @param {*} workKey
- * @returns
+ * @function getBooksBySubject
+ * @param {array} subjects - an array of strings of subject names.
+ * @returns {array} works - an array of objects of recommended books
+ *
+ * Iterate through the supplied subjects and for each one (up to a limit),
+ * iterate through the recommended books, get the needed data, return it.
+ * @example endpoint: https://openlibrary.org/subjects/animals.json
  */
-export async function GetSubjectsByKey(workKey) {
-  try {
-    let response = await fetch(`https://openlibrary.org${workKey}.json`);
-    let data = await response.json();
-
-    subjectData = {
-      description: data["description"],
-      subjects: [],
-    };
-
-    // Get first two subjects.
-    for (let i = 0; i < data["subjects"].length; i++) {
-      subjectData["subjects"].push(data["subjects"][i].toLowerCase());
-      if (i === 2) {
-        break;
-      }
-    }
-    return subjectData;
-  } catch (e) {
-    console.warn(e);
-    return {};
-  }
-}
-
-/**
- * TODO
- * @param {*} subjects
- * @returns
- */
-export async function GetBooksBySubject(subjects) {
-  // Book Subject Requests
+export async function getBooksBySubject(subjects) {
+  console.log(subjects);
 
   works = [];
 
-  for (let i = 0; i < subjects["subjects"].length; i++) {
+  for (let i = 0; i < subjects.length; i++) {
+    console.log(subjects[i]);
     let response = await fetch(
-      `https://openlibrary.org/subjects/${subjects["subjects"][i]}.json?limit=20`
+      `https://openlibrary.org/subjects/${subjects[i]}.json?limit=20`
     );
 
     let data = await response.json();
@@ -161,7 +185,7 @@ export async function GetBooksBySubject(subjects) {
         title: data["works"][j]["title"],
         author: data["works"][j]["authors"][0]["name"],
         subjects: data["works"][j]["subject"].slice(0, 5),
-        lookupSubject: subjects["subjects"][i],
+        lookupSubject: subjects[i],
         recommendationReason: "subject",
         key: data["works"][j]["key"],
       };

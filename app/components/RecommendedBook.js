@@ -1,7 +1,7 @@
 /**
  * @file RecommendedBook.js
  *
- * TODO
+ * Contains the RecommendedBook component.
  */
 
 // React
@@ -12,35 +12,31 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { colors, authorWorks } from "../styles";
 
 /**
- * TODO
- * @param {*} param0
- * @returns
+ * @function RecommendedBook
+ * @param {object} book - object containing book information to be displayed.
+ * @param {function} onPress - function from RecommendedBooks to be called when favouriting a book.
+ *
+ * A list item inside RecommendedBooks' flatlist.
+ * Controls favourited UI state.
  */
-const RecommendedBook = ({ book, onPress }) => {
+const RecommendedBook = ({ book, addToFavourites }) => {
   const [favourited, setFavourited] = useState(false);
 
-  /**
-   * TODO
-   * @param {} favouritedState
-   */
-  let cover;
-  // Cover url.
-  if (book["cover"] !== "") {
-    cover = <Image source={{ uri: book["cover"], width: 130, height: 200 }} />;
-  }
-  // No cover url.
-  else {
-    cover = (
+  // Determine local (default) or network cover.
+  let cover =
+    book["cover"] !== "" ? (
+      <Image source={{ uri: book["cover"], width: 130, height: 200 }} />
+    ) : (
       <Image
         source={require("../assets/default-book.bmp")}
         style={authorWorks.cover}
       ></Image>
     );
-  }
 
   let favouriteStar;
+
+  // Favourited Star
   if (favourited) {
-    // Gold star, unfavourite text
     favouriteStar = (
       <View style={authorWorks.favouriteView}>
         <TouchableHighlight
@@ -48,7 +44,7 @@ const RecommendedBook = ({ book, onPress }) => {
           underlayColor="#fff"
           onPress={() => {
             setFavourited(false);
-            onPress(book["key"], false);
+            addToFavourites(book["key"], false);
           }}
         >
           <MaterialCommunityIcons name="star" size={75} color={colors.gold} />
@@ -56,17 +52,17 @@ const RecommendedBook = ({ book, onPress }) => {
         <Text style={authorWorks.favouriteText}>Remove</Text>
       </View>
     );
-  } else {
-    // Outlined star, favourite this text.
+  }
+  // Unfavourited Star
+  else {
     favouriteStar = (
       <View style={authorWorks.favouriteView}>
         <TouchableHighlight
           activeOpacity={0.6}
           underlayColor="#fff"
           onPress={() => {
-            Notify(true);
             setFavourited(true);
-            onPress(book["key"], true);
+            addToFavourites(book["key"], true);
           }}
         >
           <MaterialCommunityIcons
@@ -80,7 +76,7 @@ const RecommendedBook = ({ book, onPress }) => {
     );
   }
 
-  // Recommendation - same author.
+  // Source - recsByAuthor
   if (book["recommendationReason"] === "author") {
     return (
       <View style={authorWorks.container}>
@@ -94,7 +90,7 @@ const RecommendedBook = ({ book, onPress }) => {
       </View>
     );
   }
-  // Recommendation - similar subjects.
+  // Source - recsBySubject
   else {
     let tags = book["subjects"].join(", ");
 

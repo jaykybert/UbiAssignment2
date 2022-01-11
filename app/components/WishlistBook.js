@@ -1,7 +1,7 @@
 /**
  * @file WishlistBook.js
  *
- * TODO
+ * Contains the WishlistBook component.
  */
 
 // React
@@ -14,9 +14,13 @@ import ModalWishlistAuthorRec from "./modal-views/ModalWishlistAuthorRec";
 import ModalWishlistSubjectRec from "./modal-views/ModalWishlistSubjectRec";
 
 /**
- * TODO
- * @param {*} param0
- * @returns
+ * @function WishlistBook
+ * @param {object} book - an object containing book information.
+ * @param {function} onUnfavouriteBook - function inside WishlistBooks component.
+ *
+ * List item. Displays book information.
+ * Determines source of book information (recsByAuthor, recsBySubject) to
+ * load the correct modal.
  */
 const WishlistBook = ({ book, onUnfavouriteBook }) => {
   const [modalVisible, setModalVisible] = useState(false);

@@ -21,7 +21,7 @@ export const app = StyleSheet.create({
   },
 });
 
-// Text Input
+// ISBN Input
 export const input = StyleSheet.create({
   row: {
     borderWidth: 2,
@@ -195,7 +195,7 @@ export const emptyWishlist = StyleSheet.create({
   },
 });
 
-// Camera
+// Camera / Barcode Scanner
 export const scanner = StyleSheet.create({
   container: {
     margin: 5,
@@ -214,5 +214,22 @@ export const scanner = StyleSheet.create({
   button: {
     marginTop: 10,
     paddingHorizontal: 5,
+  },
+});
+
+// Header
+export const header = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: "row",
+    backgroundColor: "#ffffff",
+  },
+  icon: {},
+  textView: {
+    marginLeft: 5,
+    justifyContent: "center",
+  },
+  text: {
+    fontSize: 20,
   },
 });

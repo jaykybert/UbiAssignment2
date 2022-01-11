@@ -1,5 +1,7 @@
 /**
- * @file AuthorWorksList.js
+ * @file RecommendedBooks.js
+ *
+ * Contains the RecommendedBooks component.
  */
 
 // React
@@ -13,14 +15,25 @@ import { colors } from "../styles";
 import * as db from "../database";
 
 /**
- * TODO
- * @param {*} param0
- * @returns
+ * @function RecommendedBooks
+ * @param {array} recBooks - array of objects that contain book information.
+ * @param {object} lookupBook - the book that was looked up.
+ * @param {function} setRecommendations - update state function from SearchISBN component.
+ *
+ * Flatlist of the recommended books with functions for inserting the lookup book and setting whether favourited.
+ * Inserts the lookup book into the database.
  */
-const RecommendedBooks = ({ recBooks, lookupBook, updateState }) => {
+const RecommendedBooks = ({ recBooks, lookupBook, setRecommendations }) => {
   const [books, setBooks] = useState(recBooks);
 
-  const AddToFavourites = (key, isFavourite) => {
+  /**
+   * @function AddToFavourites
+   * @param {string} key - the key of the book to favourite.
+   * @param {boolean} isFavourite - whether the book should be made favourite or not.
+   *
+   * Find the book inside books using the key, and update the favourited property.
+   */
+  const addToFavourites = (key, isFavourite) => {
     for (let i = 0; i < books.length; i++) {
       if (books[i]["key"] === key) {
         // Match, update property
@@ -33,8 +46,10 @@ const RecommendedBooks = ({ recBooks, lookupBook, updateState }) => {
   };
 
   /**
-   * Callback function - called from the success callback of tx.executeSql().
-   * @param {*} lookupId
+   * @function onInsertedLookup
+   * @param {number} lookupId
+   *
+   * Callback function called when successfully insert lookup book into database.
    */
   const onInsertedLookup = (lookupId) => {
     for (let i = 0; i < books.length; i++) {
@@ -45,12 +60,15 @@ const RecommendedBooks = ({ recBooks, lookupBook, updateState }) => {
       }
     }
 
-    // Set state to LOOKUP_COMPLETE (via props)?
-    // Set modal to hidden
-    updateState({ state: "LOOKUP_COMPLETE" });
+    setRecommendations({ state: "LOOKUP_COMPLETE" });
   };
 
-  const SaveToDatabase = () => {
+  /**
+   * @function saveToDatabase
+   *
+   * Save the lookup book into the database.
+   */
+  const saveToDatabase = () => {
     db.insertLookup(lookupBook, onInsertedLookup);
   };
 
@@ -60,7 +78,7 @@ const RecommendedBooks = ({ recBooks, lookupBook, updateState }) => {
         data={recBooks}
         keyExtractor={(item) => item.key}
         renderItem={({ item }) => (
-          <RecommendedBook book={item} onPress={AddToFavourites} />
+          <RecommendedBook book={item} addToFavourites={addToFavourites} />
         )}
       />
 
@@ -70,7 +88,7 @@ const RecommendedBooks = ({ recBooks, lookupBook, updateState }) => {
           color={colors.darkGreen}
           onPress={() => {
             console.log("saving...");
-            SaveToDatabase();
+            saveToDatabase();
           }}
         />
       </View>
