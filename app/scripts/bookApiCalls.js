@@ -19,6 +19,7 @@ export async function getBookByISBN(isbn) {
   try {
     let response = await fetch(`https://openlibrary.org/isbn/${isbn}.json`);
     let data = await response.json();
+
     bookData = {
       title: data["title"],
       firstSentence: data.hasOwnProperty("first_sentence")
@@ -33,6 +34,7 @@ export async function getBookByISBN(isbn) {
         ? `https://covers.openlibrary.org/b/id/${data["covers"][0]}-M.jpg`
         : "",
     };
+
     return bookData;
   } catch (e) {
     return { error: "Invalid request" };

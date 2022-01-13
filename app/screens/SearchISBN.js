@@ -164,6 +164,7 @@ const SearchISBN = ({ isbn }) => {
   // Return Started Modal
   else if (recommendations["state"] === "STARTED") {
     lookupBook();
+
     return (
       <View style={controller.container}>
         <Modal
