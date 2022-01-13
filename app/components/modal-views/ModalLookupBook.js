@@ -1,33 +1,50 @@
 /**
- * @file ModalWishlistAuthorRec.js
+ * @file ModalLookupBook.js
  *
- * Contains the ModalWishlistAuthorRec component.
+ * Contains the ModalLookupBook component.
  */
 
 // React
 import React from "react";
-import { Button, Modal, Text, TouchableHighlight, View } from "react-native";
+import {
+  Button,
+  Modal,
+  ScrollView,
+  Text,
+  TouchableHighlight,
+  View,
+} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 // Styles
-import { modal, wishlistAuthorBooks, colors } from "../../styles";
+import {
+  colors,
+  lookupBookModal,
+  modal,
+  wishlistAuthorBooks,
+} from "../../styles";
 
 /**
- * @function ModalWishlistAuthorRec
- * @param {object} book - information on the book to be displayed.
- * @param {JSX} coverImage - the cover of the book.
- * @param {boolean} modalVisible - state variable from WishlistBook component.
- * @param {function} setModalVisible - update state function from WishlistBook component.
- * @param {function} onUnfavouriteBook - function called when book is unfavourited, from WishlistBooks component.
+ * @function ModalLookupBook
+ * @param {object} book - lookup book information.
+ * @param {JSX} coverImage - book cover.
+ * @param {modalVisible} - state variable from LookupBook component.
+ * @param {function} setModalVisible - update state function from LookupBook component.
+ * @param {function} onDeleteLookup - function from LookupHistoryScreen component.
  *
- * Display the wishlisted book (from recsByAuthor) inside of a modal.
+ * Display the lookup book contents inside of a modal.
  */
-const ModalWishlistAuthorRec = ({
+const ModalLookupBook = ({
   book,
   coverImage,
   modalVisible,
   setModalVisible,
-  onUnfavouriteBook,
+  onDeleteLookup,
 }) => {
+  let desc =
+    book["description"] !== null
+      ? book["description"]
+      : "No description provided.";
+
   return (
     <Modal
       animationType="slide"
@@ -40,18 +57,19 @@ const ModalWishlistAuthorRec = ({
       <View style={modal.centeredView}>
         <View style={modal.modalView}>
           <View style={wishlistAuthorBooks.headingView}>
-            <Text style={wishlistAuthorBooks.author}>Recommendation</Text>
-            <Text style={wishlistAuthorBooks.title}>{book["title"]}</Text>
             <Text style={wishlistAuthorBooks.author}>
-              {book["author"]}
-              {book["published"] !== "" ? `, ${book["published"]}` : ""}
+              Searched: {book["date"]}
             </Text>
+            <Text style={wishlistAuthorBooks.title}>{book["title"]}</Text>
+            <Text style={wishlistAuthorBooks.author}>{book["author"]}</Text>
           </View>
 
           <View style={wishlistAuthorBooks.coverView}>{coverImage}</View>
 
-          <View style={wishlistAuthorBooks.descriptionView}>
-            <Text>{book["description"]}</Text>
+          <View style={lookupBookModal.scroll}>
+            <ScrollView>
+              <Text>{desc}</Text>
+            </ScrollView>
           </View>
 
           <View>
@@ -60,16 +78,16 @@ const ModalWishlistAuthorRec = ({
               underlayColor="#fff"
               onPress={() => {
                 setModalVisible(!modalVisible);
-                onUnfavouriteBook(book["key"]);
+                onDeleteLookup(book["id"]);
               }}
             >
               <MaterialCommunityIcons
-                name="star"
+                name="trash-can-outline"
                 size={75}
-                color={colors.gold}
+                color={colors.black}
               />
             </TouchableHighlight>
-            <Text style={wishlistAuthorBooks.favouriteText}>Remove</Text>
+            <Text style={wishlistAuthorBooks.favouriteText}>Delete</Text>
           </View>
 
           <View style={wishlistAuthorBooks.buttonView}>
@@ -88,4 +106,4 @@ const ModalWishlistAuthorRec = ({
   );
 };
 
-export default ModalWishlistAuthorRec;
+export default ModalLookupBook;

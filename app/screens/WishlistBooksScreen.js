@@ -50,6 +50,18 @@ const WishlistBooksScreen = () => {
      */
     const onRecsBySubjectRetrieved = (recSubjectBooks) => {
       let recBooks = recAuthorBooks.concat(recSubjectBooks);
+
+      // Code to remove duplicates found here:
+      // https://stackoverflow.com/questions/32634736/javascript-object-array-removing-objects-with-duplicate-properties
+      recBooks = recBooks.reduce(function (prev, current) {
+        if (
+          !prev.some(function (element) {
+            return element.key === current.key;
+          })
+        )
+          prev.push(current);
+        return prev;
+      }, []);
       setBooks(recBooks);
       setGotBooks(true);
     };
@@ -59,29 +71,31 @@ const WishlistBooksScreen = () => {
 
   /**
    * @function unfavouriteAuthorBook
-   * @param {number} - the id of the entry inside recsByAuthor to delete.
+   * @param {string} - the key of the entry inside recsByAuthor to unfavourite.
    */
-  const unfavouriteAuthorBook = (bookId) => {
-    db.deleteRecommendationByAuthor(bookId, onUnfavouritedBookDeleted);
+  const unfavouriteAuthorBook = (key) => {
+    db.unfavouriteRecommendationByAuthor(key, onBookUnfavourited);
   };
 
   /**
    * @function unfavouriteSubjectBook
-   * @param {number} bookId - the id of the entry inside recsBySubject to delete.
+   * @param {string} bookId - the key of the entry inside recsBySubject to unfavourite.
    */
-  const unfavouriteSubjectBook = (bookId) => {
-    db.deleteRecommendationBySubject(bookId, onUnfavouritedBookDeleted);
+  const unfavouriteSubjectBook = (key) => {
+    db.unfavouriteRecommendationBySubject(key, onBookUnfavourited);
   };
 
   /**
-   * @function onUnfavouritedBookDeleted
+   * @function onBookUnfavourited
    *
-   * A callback function called when a book has been deleted from the database.
+   * A callback function called when a book has been unfavourited from the database.
    */
-  const onUnfavouritedBookDeleted = () => {
+  const onBookUnfavourited = () => {
     setGotBooks(false);
+    db.selectFavouritedRecommendationsByAuthor(onRecsByAuthorRetrieved);
   };
 
+  // Got books.
   if (gotBooks) {
     // No books stored.
     if (books.length === 0) {

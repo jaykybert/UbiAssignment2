@@ -19,27 +19,44 @@ import { colors, input } from "../styles";
  * On button press, update state inside SearchISBN.
  */
 const InputISBN = ({ recommendations, setRecommendations }) => {
-  const [text, setText] = useState("");
+  const [inputText, setInputText] = useState("");
+  const [invalidISBN, setInvalidISBN] = useState(true);
   return (
     <View>
       <View style={input.row}>
         <View style={input.inputView}>
           <TextInput
-            value={text}
+            value={inputText}
             placeholder="ISBN 10/13"
-            onChangeText={(text) => setText(text)}
+            onChangeText={(text) => {
+              setInputText(text);
+              if (text.length === 10 || text.length === 13) {
+                setInvalidISBN(false);
+              } else {
+                setInvalidISBN(true);
+              }
+            }}
             style={input.inputText}
             keyboardType="numeric"
+            onEndEditing={() => {
+              if (inputText.length === 10 || inputText.length === 13) {
+                let recCopy = JSON.parse(JSON.stringify(recommendations));
+                recCopy["state"] = "STARTED";
+                recCopy["isbn"] = inputText;
+                setRecommendations(recCopy);
+              }
+            }}
           />
         </View>
         <View style={input.buttonView}>
           <Button
+            disabled={invalidISBN}
             title="Search"
             color={colors.darkGreen}
             onPress={() => {
               let recCopy = JSON.parse(JSON.stringify(recommendations));
               recCopy["state"] = "STARTED";
-              recCopy["isbn"] = text;
+              recCopy["isbn"] = inputText;
               setRecommendations(recCopy);
             }}
             style={input.button}

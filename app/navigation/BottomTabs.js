@@ -11,7 +11,9 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 // Components
 import BooksTopTabs from "./BooksTopTabs.js";
 import SearchISBN from "../screens/SearchISBN.js";
-import EmptyComponent from "../shared/EmptyComponent.js";
+import SettingsScreen from "../screens/SettingsScreen.js";
+// Styles
+import { colors } from "../styles.js";
 
 const Root = createMaterialBottomTabNavigator();
 
@@ -27,16 +29,15 @@ const BottomTabs = () => {
   return (
     <Root.Navigator
       initialRouteName="Camera"
-      activeColor="#ffffff"
+      activeColor={colors.white}
       inactiveColor="#1f1f1f"
-      shifting={true}
       backBehaviour="none"
+      barStyle={{ backgroundColor: colors.darkGreen }}
     >
       <Root.Screen
         name="Books"
         component={BooksTopTabs}
         options={{
-          tabBarColor: "#256f5a",
           tabBarLabel: "Books",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="bookshelf" color={color} size={24} />
@@ -48,7 +49,6 @@ const BottomTabs = () => {
         name="Camera"
         component={SearchISBN}
         options={{
-          tabBarColor: "#256f5a",
           tabBarLabel: "Scan",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="camera" color={color} size={24} />
@@ -58,9 +58,8 @@ const BottomTabs = () => {
 
       <Root.Screen
         name="Settings"
-        component={EmptyComponent}
+        component={SettingsScreen}
         options={{
-          tabBarColor: "#256f5a",
           tabBarLabel: "Settings",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="cog" color={color} size={24} />

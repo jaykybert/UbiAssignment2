@@ -5,6 +5,7 @@ import { StyleSheet } from "react-native";
 export const colors = {
   gold: "#ffd327",
   darkGreen: "#256f5a",
+  darkGrey: "#262727",
   black: "#000000",
   white: "#ffffff",
   offWhite: "#fbfbfc",
@@ -86,11 +87,13 @@ export const authorWorks = StyleSheet.create({
     backgroundColor: colors.offWhite,
     justifyContent: "center",
     alignItems: "center",
-    borderTopColor: colors.darkGreen,
-    borderTopWidth: 2,
-    borderBottomColor: colors.darkGreen,
-    borderBottomWidth: 2,
+
+    borderColor: colors.darkGreen,
+    borderWidth: 2,
+    borderRadius: 5,
+
     marginBottom: 10,
+    marginHorizontal: 5,
     padding: 5,
     flex: 1,
   },
@@ -130,14 +133,14 @@ export const authorWorks = StyleSheet.create({
 
 export const wishlistAuthorBooks = StyleSheet.create({
   item: {
-    marginTop: 10,
+    marginVertical: 5,
+    marginHorizontal: 5,
     paddingBottom: 10,
     backgroundColor: colors.offWhite,
     alignItems: "center",
-    borderTopColor: colors.darkGreen,
-    borderTopWidth: 2,
-    borderBottomColor: colors.darkGreen,
-    borderBottomWidth: 2,
+    borderColor: colors.darkGreen,
+    borderWidth: 2,
+    borderRadius: 5,
   },
   headingView: {
     marginBottom: 10,
@@ -169,8 +172,8 @@ export const wishlistAuthorBooks = StyleSheet.create({
   },
 
   title: {
-    color: "#262727",
-    fontSize: 16,
+    color: colors.darkGrey,
+    fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
   },
@@ -231,5 +234,84 @@ export const header = StyleSheet.create({
   },
   text: {
     fontSize: 20,
+  },
+});
+
+// Lookup Book Item
+export const lookupBook = StyleSheet.create({
+  item: {
+    marginVertical: 5,
+    marginHorizontal: 5,
+    paddingBottom: 10,
+    backgroundColor: colors.offWhite,
+    alignItems: "center",
+    borderColor: colors.darkGreen,
+    borderWidth: 2,
+    borderRadius: 5,
+  },
+  headingView: {
+    marginBottom: 10,
+  },
+  horizontalView: {
+    flexDirection: "row",
+  },
+  textView: {
+    padding: 5,
+    flex: 1,
+    paddingLeft: 15,
+    justifyContent: "center",
+  },
+  coverView: {
+    flex: 0,
+    marginHorizontal: 5,
+    paddingRight: 10,
+  },
+  excerptView: {
+    marginTop: 5,
+    marginHorizontal: 10,
+    padding: 5,
+  },
+  cover: {
+    height: 200,
+    width: 130,
+  },
+  title: {
+    color: colors.darkGrey,
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  author: {
+    fontStyle: "italic",
+    textAlign: "center",
+  },
+  subHeading: {
+    fontWeight: "bold",
+    fontStyle: "italic",
+  },
+  generalText: {
+    fontStyle: "italic",
+  },
+});
+
+// Top of Modal
+export const topOfModal = StyleSheet.create({
+  view: {
+    marginBottom: 5,
+  },
+  text: {
+    fontWeight: "bold",
+  },
+});
+
+// Lookup Book Modal
+export const lookupBookModal = StyleSheet.create({
+  scroll: {
+    maxHeight: 200,
+    padding: 5,
+    margin: 10,
+    borderColor: colors.darkGreen,
+    borderWidth: 2,
+    borderRadius: 10,
   },
 });

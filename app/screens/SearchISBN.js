@@ -6,7 +6,7 @@
 
 // React
 import React, { useState } from "react";
-import { AlertIOS, Modal, Platform, ToastAndroid, View } from "react-native";
+import { Modal, Platform, ToastAndroid, View } from "react-native";
 // Components
 import ModalStarted from "../components/modal-views/ModalStarted.js";
 import ModalGotBook from "../components/modal-views/ModalGotBook";
@@ -44,17 +44,15 @@ import {
  *    > ERROR
  *
  * Follows the above order linearly.
- * When one API call returns, update the state along with the retrieved data.
+ * When one API call returns, update the state along with the newly-retrieved data.
  */
 const SearchISBN = ({ isbn }) => {
-  const [modalVisible, setModalVisible] = useState(true);
   const [recommendations, setRecommendations] = useState({
     state: "NOT_STARTED",
     isbn: isbn,
     authorWorks: [],
     recommendedWorks: [],
   });
-  console.log(recommendations["state"]);
 
   /**
    * @function lookupBook
@@ -171,7 +169,7 @@ const SearchISBN = ({ isbn }) => {
         <Modal
           animationType="none"
           transparent={true}
-          visible={modalVisible}
+          visible={true}
           onRequestClose={() => {
             setRecommendations({
               state: "NOT_STARTED",
@@ -195,7 +193,7 @@ const SearchISBN = ({ isbn }) => {
         <Modal
           animationType="none"
           transparent={true}
-          visible={modalVisible}
+          visible={true}
           onRequestClose={() => {
             setRecommendations({
               state: "NOT_STARTED",
@@ -219,7 +217,7 @@ const SearchISBN = ({ isbn }) => {
         <Modal
           animationType="none"
           transparent={true}
-          visible={modalVisible}
+          visible={true}
           onRequestClose={() => {
             setRecommendations({
               state: "NOT_STARTED",
@@ -243,7 +241,7 @@ const SearchISBN = ({ isbn }) => {
         <Modal
           animationType="none"
           transparent={true}
-          visible={modalVisible}
+          visible={true}
           onRequestClose={() => {
             setRecommendations({
               state: "NOT_STARTED",
@@ -267,7 +265,7 @@ const SearchISBN = ({ isbn }) => {
         <Modal
           animationType="none"
           transparent={true}
-          visible={modalVisible}
+          visible={true}
           onRequestClose={() => {
             setRecommendations({
               state: "NOT_STARTED",
@@ -309,7 +307,7 @@ const SearchISBN = ({ isbn }) => {
         <Modal
           animationType="none"
           transparent={true}
-          visible={modalVisible}
+          visible={true}
           onRequestClose={() => {
             setRecommendations({
               state: "NOT_STARTED",
@@ -333,9 +331,8 @@ const SearchISBN = ({ isbn }) => {
   else if (recommendations["state"] === "LOOKUP_COMPLETE") {
     if (Platform.OS === "android") {
       ToastAndroid.show("Saved Wishlist!", ToastAndroid.SHORT);
-    } else {
-      AlertIOS.alert("Saved Wishlist!");
     }
+
     setRecommendations({
       state: "NOT_STARTED",
       isbn: "",
@@ -351,7 +348,7 @@ const SearchISBN = ({ isbn }) => {
         <Modal
           animationType="none"
           transparent={true}
-          visible={modalVisible}
+          visible={true}
           onRequestClose={() => {
             setRecommendations({
               state: "NOT_STARTED",

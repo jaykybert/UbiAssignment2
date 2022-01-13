@@ -1,7 +1,7 @@
 /**
- * @file EmptyComponent.js
+ * @file SettingsScreen.js
  *
- * Contains EmptyComponent.
+ * Contains the SettingsScreen component.
  */
 
 // React
@@ -9,13 +9,14 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 /**
- * @function EmptyComponent
- * A placeholder component used to flesh out navigation.
+ * @function SettingsScreen
+ *
+ * Not implemented.
  */
-const EmptyComponent = () => {
+const SettingsScreen = () => {
   return (
     <View style={styles.empty}>
-      <Text>...</Text>
+      <Text>Settings</Text>
     </View>
   );
 };
@@ -28,4 +29,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EmptyComponent;
+export default SettingsScreen;

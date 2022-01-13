@@ -14,7 +14,7 @@ export function createLookup() {
   db.transaction((tx) => {
     tx.executeSql(
       "CREATE TABLE IF NOT EXISTS lookup(" +
-        "id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, sentence TEXT, description TEXT, cover TEXT, pages INTEGER, publisher TEXT, published TEXT, date TEXT)",
+        "id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, author TEXT, sentence TEXT, description TEXT, cover TEXT, pages INTEGER, publisher TEXT, published TEXT, date TEXT)",
       null,
       // Success
       (txObj, data) => {},
@@ -41,9 +41,10 @@ export function insertLookup(book, callback) {
 
   db.transaction((tx) => {
     tx.executeSql(
-      "INSERT INTO lookup(title, sentence, description, cover, pages, publisher, published, date) VALUES (?,?,?,?,?,?,?,?)",
+      "INSERT INTO lookup(title, author, sentence, description, cover, pages, publisher, published, date) VALUES (?,?,?,?,?,?,?,?,?)",
       [
         book["title"],
+        book["author"],
         book["firstSentence"],
         book["description"],
         book["cover"],
@@ -65,19 +66,43 @@ export function insertLookup(book, callback) {
 }
 
 /**
- * @function selectLookup
- * @param {function} callback - a function to be called when the query is successful.
+ * @function deleteLookupBook
+ * @param {number} lookupId - the id of the lookup book to be deleted.
+ * @param {function} onLookupBookDeleted - a function to be called when the query is successful.
+ *
+ * Delete the specified lookup book from the lookup table. Called the provided function.
+ */
+export function deleteLookupBook(lookupId, onLookupBookDeleted) {
+  db.transaction((tx) => {
+    tx.executeSql(
+      "DELETE FROM lookup WHERE id=?",
+      [lookupId],
+      // Success
+      (txObj, data) => {
+        onLookupBookDeleted();
+      },
+      // Failure
+      (txObj, error) => {
+        console.warn(error);
+      }
+    );
+  });
+}
+
+/**
+ * @function selectLookupBooks
+ * @param {function} onLookupBooksRecieved - a function to be called when the query is successful.
  *
  * Select all entries from the lookup table. Pass the entries into the callback function.
  */
-export function selectLookup(callback) {
+export function selectLookupBooks(onLookupBooksRecieved) {
   db.transaction((tx) => {
     tx.executeSql(
       "SELECT * FROM lookup",
       null,
       // Success
       (txObj, data) => {
-        callback(data.rows._array);
+        onLookupBooksRecieved(data.rows._array);
       },
       // Failure
       (txObj, error) => {
@@ -112,15 +137,15 @@ export function createRecommendationsByAuthor() {
 }
 
 /**
- * @function deleteRecommendationByAuthor
- * @param {number} id - the id of the book in recsByAuthor to be deleted.
+ * @function unfavouriteRecommendationByAuthor
+ * @param {string} key - the key of the book in recsByAuthor to be deleted.
  * @param {function} onBookDeleted - a function to be called when the query is successful.
  */
-export function deleteRecommendationByAuthor(id, onBookDeleted) {
+export function unfavouriteRecommendationByAuthor(key, onBookDeleted) {
   db.transaction((tx) => {
     tx.executeSql(
-      "DELETE FROM recsByAuthor WHERE id = ?",
-      [id],
+      "UPDATE recsByAuthor SET favourited=0 WHERE key=?",
+      [key],
       // Success
       (txObj, data) => {
         onBookDeleted();
@@ -210,15 +235,15 @@ export function createRecommendationsBySubject() {
 }
 
 /**
- * @function deleteRecommendationBySubject
- * @param {number} id - the id of the book in recsBySubject to be deleted.
+ * @function unfavouriteRecommendationBySubject
+ * @param {string} key - the key of the book in recsBySubject to be updated.
  * @param {function} onBookDeleted - a function to be called when the query is successful.
  */
-export function deleteRecommendationBySubject(id, onBookDeleted) {
+export function unfavouriteRecommendationBySubject(key, onBookDeleted) {
   db.transaction((tx) => {
     tx.executeSql(
-      "DELETE FROM recsBySubject WHERE id=?",
-      [id],
+      "UPDATE recsBySubject SET favourited=0 WHERE key=?",
+      [key],
       // Success
       (txObj, data) => {
         onBookDeleted();

@@ -26,7 +26,7 @@ const WishlistBooks = ({
   return (
     <FlatList
       data={wishlistBooks}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.key}
       renderItem={({ item }) => (
         <WishlistBook
           book={item}

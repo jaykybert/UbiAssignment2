@@ -5,7 +5,7 @@
  */
 
 // React & Navigation
-import React from "react";
+import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 // Components
 import HomescreenStack from "./app/navigation/HomescreenStack";
@@ -21,9 +21,11 @@ import * as db from "./app/database";
  * Contains HomescreenStack.
  */
 export default function App() {
-  db.createLookup();
-  db.createRecommendationsByAuthor();
-  db.createRecommendationsBySubject();
+  useEffect(() => {
+    db.createLookup();
+    db.createRecommendationsByAuthor();
+    db.createRecommendationsBySubject();
+  }, []);
 
   return (
     <NavigationContainer style={app.container}>

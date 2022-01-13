@@ -33,9 +33,6 @@ const ModalWishlistSubjectRec = ({
       animationType="slide"
       transparent={true}
       visible={modalVisible}
-      onShow={() => {
-        console.log("Showing");
-      }}
       onRequestClose={() => {
         setModalVisible(!modalVisible);
       }}
@@ -43,6 +40,7 @@ const ModalWishlistSubjectRec = ({
       <View style={modal.centeredView}>
         <View style={modal.modalView}>
           <View style={wishlistAuthorBooks.headingView}>
+            <Text style={wishlistAuthorBooks.author}>Recommendation</Text>
             <Text style={wishlistAuthorBooks.title}>{book["title"]}</Text>
             <Text style={wishlistAuthorBooks.author}>{book["author"]}</Text>
           </View>
@@ -50,6 +48,7 @@ const ModalWishlistSubjectRec = ({
           <View style={wishlistAuthorBooks.coverView}>{coverImage}</View>
 
           <View style={wishlistAuthorBooks.descriptionView}>
+            <Text style={wishlistAuthorBooks.author}>Tags</Text>
             <Text>{book["subjects"]}</Text>
           </View>
 
@@ -59,7 +58,7 @@ const ModalWishlistSubjectRec = ({
               underlayColor="#fff"
               onPress={() => {
                 setModalVisible(!modalVisible);
-                onUnfavouriteBook(book["id"]);
+                onUnfavouriteBook(book["key"]);
               }}
             >
               <MaterialCommunityIcons

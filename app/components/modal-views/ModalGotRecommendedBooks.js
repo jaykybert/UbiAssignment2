@@ -6,11 +6,11 @@
 
 // React
 import React from "react";
-import { Image, View } from "react-native";
+import { Image, Text, View } from "react-native";
 // Components
 import RecommendedBooks from "../RecommendedBooks";
 // Styles
-import { modal } from "../../styles";
+import { modal, topOfModal } from "../../styles";
 
 /**
  * @function ModalGotRecommendedBooks
@@ -32,6 +32,11 @@ const ModalGotRecommendedBooks = ({
           source={require("../../assets/complete.png")}
           style={modal.image}
         />
+        <View style={topOfModal.view}>
+          <Text style={topOfModal.text}>
+            Our recommendations, in order of confidence.
+          </Text>
+        </View>
 
         <RecommendedBooks
           recBooks={recBooks}

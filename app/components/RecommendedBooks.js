@@ -87,7 +87,6 @@ const RecommendedBooks = ({ recBooks, lookupBook, setRecommendations }) => {
           title="Save to Wishlist"
           color={colors.darkGreen}
           onPress={() => {
-            console.log("saving...");
             saveToDatabase();
           }}
         />

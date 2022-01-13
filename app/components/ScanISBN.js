@@ -2,6 +2,17 @@
  * @file ScanISBN.js
  *
  * Contains the ScanISBN component.
+ *
+ * NOTE:
+ * Ideally expo-barcode-scanner would be used in place of expo-camera.
+ * However, there is an open issue with the scanner only working once and requiring a reload to work again, which I encountered.
+ *      > See here: https://github.com/expo/expo/issues/14906
+ * <BarCodeScanner> will read barcodes only once and require reloading on both Android and IOS (tested).
+ * <Camera> will read barcodes without issue, however, only on Android.
+ *
+ * For the sake of the prototype, I have chosen to use <Camera> to show the intended behaviour on Android only, rather than
+ * limiting the behaviour on both platforms.
+ * If the issue were to be resolved, I would then change back to <BarCodeScanner>.
  */
 
 // React
@@ -16,6 +27,7 @@ import {
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { Camera } from "expo-camera";
+import { BarCodeScanner } from "expo-barcode-scanner";
 // Styles
 import { scanner, colors } from "../styles";
 
@@ -101,3 +113,19 @@ const ScanISBN = ({ recommendations, setRecommendations }) => {
 };
 
 export default ScanISBN;
+
+/**
+ * // Code to test <BarCodeScanner> works on both platforms.
+ * else {
+    return (
+      <View style={scanner.container}>
+        {isFocused && (
+          <BarCodeScanner
+            onBarCodeScanned={handleScan}
+            style={StyleSheet.absoluteFillObject}
+          />
+        )}
+      </View>
+    );
+  }
+ */

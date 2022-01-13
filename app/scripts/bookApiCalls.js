@@ -167,12 +167,9 @@ export async function getAuthorWorksByKey(authorKey) {
  * @example endpoint: https://openlibrary.org/subjects/animals.json
  */
 export async function getBooksBySubject(subjects) {
-  console.log(subjects);
-
   works = [];
 
   for (let i = 0; i < subjects.length; i++) {
-    console.log(subjects[i]);
     let response = await fetch(
       `https://openlibrary.org/subjects/${subjects[i]}.json?limit=20`
     );
